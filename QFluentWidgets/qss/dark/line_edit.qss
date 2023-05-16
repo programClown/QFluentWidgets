@@ -1,0 +1,99 @@
+LineEdit, TextEdit, PlainTextEdit {
+    background-color: rgb(55, 55, 55);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5442);
+    border-radius: 5px;
+    font: 14px "Segoe UI", "Microsoft YaHei";
+    padding: 0px 10px;
+    color: white;
+    selection-background-color: --ThemeColorPrimary;
+    selection-color: black;
+}
+
+TextEdit, PlainTextEdit  {
+    padding: 0px 0px 0px 10px;
+}
+
+LineEdit:hover, TextEdit:hover, PlainTextEdit:hover {
+    background-color: rgb(60, 60, 60);
+}
+
+LineEdit:!focus, TextEdit:!focus, PlainTextEdit:!focus {
+    background-color: rgb(55, 55, 55);
+    border-bottom: 1px solid rgb(159, 159, 159);
+}
+
+LineEdit:focus {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+TextEdit:focus, PlainTextEdit:focus {
+    border-bottom: 1px solid --ThemeColorPrimary;
+    background-color: rgb(34, 34, 34);
+}
+
+LineEdit:disabled, TextEdit:disabled, PlainTextEdit:disabled {
+    color: rgba(255, 255, 255, 150);
+    background-color: rgb(59, 59, 59);
+    border: 1px solid rgb(73, 73, 73);
+}
+
+#lineEditButton {
+    background-color: transparent;
+    border-radius: 4px;
+    margin: 0;
+}
+
+#lineEditButton:hover {
+    background-color: rgba(255, 255, 255, 9);
+}
+
+#lineEditButton:pressed {
+    background-color: rgba(255, 255, 255, 6);
+}
+
+QScrollBar {
+    background: transparent;
+    width: 4px;
+    margin-top: 12px;
+    margin-bottom: 0;
+    padding-right: 2px;
+}
+
+QScrollBar:horizontal {
+    background: transparent;
+    height: 4px;
+    margin-left: 12px;
+    margin-right: 12px;
+    padding-bottom: 2px;
+}
+
+
+QScrollBar::sub-line {
+    background: transparent;
+}
+
+QScrollBar::add-line {
+    background: transparent;
+}
+
+QScrollBar::handle {
+    background: rgb(122, 122, 122);
+    border: 2px solid rgb(128, 128, 128);
+    border-radius: 1px;
+}
+
+QScrollBar::handle:vertical {
+    min-height: 32px;
+}
+
+QScrollBar::handle:horizontal {
+    min-width: 32px;
+}
+
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical,
+QScrollBar::add-page:horizontal,
+QScrollBar::sub-page:horizontal {
+    background: none;
+}

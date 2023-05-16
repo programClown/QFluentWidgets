@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/qframelesswindow">
+        <file>images/close.svg</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,115 @@
+# Copyright (C) 2016 Olivier Goffart <ogoffart@woboq.com>
+#
+# You may use this file under the terms of the 3-clause BSD license.
+# See the file LICENSE from this package for details.
+
+# This is the clang-format configuration style to be used by Qt,
+# based on the rules from https://wiki.qt.io/Qt_Coding_Style and
+# https://wiki.qt.io/Coding_Conventions
+
+---
+# Webkit style was loosely based on the Qt style
+BasedOnStyle: WebKit
+
+Standard: Cpp11
+
+# Column width is limited to 100 in accordance with Qt Coding Style.
+# https://wiki.qt.io/Qt_Coding_Style
+# Note that this may be changed at some point in the future.
+ColumnLimit: 120
+# How much weight do extra characters after the line length limit have.
+# PenaltyExcessCharacter: 4
+
+# Disable reflow of qdoc comments: indentation rules are different.
+# Translation comments are also excluded.
+CommentPragmas: "^!|^:"
+
+# We want a space between the type and the star for pointer types.
+PointerBindsToType: false
+#指针的*的挨着哪边
+#PointerAlignment: Right
+
+# We use template< without space.
+SpaceAfterTemplateKeyword: false
+
+# We want to break before the operators, but not before a '='.
+BreakBeforeBinaryOperators: NonAssignment
+
+# Braces are usually attached, but not after functions or class declarations.
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: true
+  AfterControlStatement: false
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterObjCDeclaration: false
+  AfterStruct: true
+  AfterUnion: false
+  BeforeCatch: false
+  BeforeElse: false
+  IndentBraces: false
+
+# When constructor initializers do not fit on one line, put them each on a new line.
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+# Indent initializers by 4 spaces
+ConstructorInitializerIndentWidth: 4
+
+# Indent width for line continuations.
+ContinuationIndentWidth: 8
+
+# No indentation for namespaces.
+# 命名空间的缩进: None, Inner(缩进嵌套的命名空间中的内容), All
+NamespaceIndentation: All
+
+# Allow indentation for preprocessing directives (if/ifdef/endif). https://reviews.llvm.org/rL312125
+IndentPPDirectives: BeforeHash
+
+# Horizontally align arguments after an open bracket.
+# The coding style does not specify the following, but this is what gives
+# results closest to the existing code.
+AlignAfterOpenBracket: true
+AlwaysBreakTemplateDeclarations: true
+
+# Ideally we should also allow less short function in a single line, but
+# clang-format does not handle that.
+AllowShortFunctionsOnASingleLine: Inline
+
+# The coding style specifies some include order categories, but also tells to
+# separate categories with an empty line. It does not specify the order within
+# the categories. Since the SortInclude feature of clang-format does not
+# re-order includes separated by empty lines, the feature is not used.
+SortIncludes: false
+
+# macros for which the opening brace stays attached.
+ForEachMacros: [ for, foreach, Q_FOREACH, BOOST_FOREACH, forever, Q_FOREVER, QBENCHMARK, QBENCHMARK_ONCE ]
+
+# Break constructor initializers before the colon and after the commas.
+BreakConstructorInitializers: BeforeColon
+
+# Avoids the addition of a space between an identifier and the
+# initializer list in list-initialization.
+SpaceBeforeCpp11BracedList: false
+
+# 连续赋值时，对齐所有等号
+AlignConsecutiveAssignments: true
+# 连续声明时，对齐所有声明的变量名
+AlignConsecutiveDeclarations: false
+# 支持一行的if
+#AllowShortIfStatementsOnASingleLine: true
+# 注释对齐
+AlignTrailingComments: true
+FixNamespaceComments: true
+# 在尾随的注释前添加的空格数(只适用于//)
+SpacesBeforeTrailingComments: 2
+# false表示函数实参要么都在同一行，要么都各自一行
+#BinPackArguments:	true
+# false表示所有形参要么都在同一行，要么都各自一行
+#BinPackParameters:	true
+
+#-- true - case不与switch对齐
+#-- false - case和switch对齐
+IndentCaseLabels: true
+
+#宏定义对齐
+AlignConsecutiveMacros: true

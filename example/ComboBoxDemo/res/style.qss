@@ -1,0 +1,130 @@
+﻿/* 未下拉时，QComboBox的样式 */
+QComboBox {
+    border: 1px solid gray;   /* 边框 */
+    border-radius: 3px;   /* 圆角 */
+    padding: 1px 18px 1px 3px;   /* 字体填衬 */
+    color: #000;
+    font: normal normal 15px "Microsoft YaHei";
+    background: transparent;
+}
+
+/* 下拉后，整个下拉窗体样式 */
+QComboBox QAbstractItemView {
+    outline: 0px solid gray;   /* 选定项的虚框 */
+    border: 1px solid yellow;   /* 整个下拉窗体的边框 */
+    color: green;
+    background-color: red;   /* 整个下拉窗体的背景色 */
+    selection-background-color: lightgreen;   /* 整个下拉窗体被选中项的背景色 */
+}
+
+/* 下拉后，整个下拉窗体每项的样式 */
+QComboBox QAbstractItemView::item {
+    height: 50px;   /* 项的高度（设置pComboBox->setView(new QListView());后，该项才起作用） */
+}
+
+/* 下拉后，整个下拉窗体越过每项的样式 */
+QComboBox QAbstractItemView::item:hover {
+    color: #FFFFFF;
+    background-color: lightgreen;   /* 整个下拉窗体越过每项的背景色 */
+}
+
+/* 下拉后，整个下拉窗体被选择的每项的样式 */
+QComboBox QAbstractItemView::item:selected {
+    color: #FFFFFF;
+    background-color: lightgreen;
+}
+
+/* QComboBox中的垂直滚动条 */
+QComboBox QAbstractScrollArea QScrollBar:vertical {
+    width: 10px;
+    background-color: #d0d2d4;   /* 空白区域的背景色*/
+}
+
+QComboBox QAbstractScrollArea QScrollBar::handle:vertical {
+    border-radius: 5px;   /* 圆角 */
+    background: rgb(160,160,160);   /* 小方块的背景色深灰lightblue */
+}
+
+QComboBox QAbstractScrollArea QScrollBar::handle:vertical:hover {
+    background: rgb(90, 91, 93);   /* 越过小方块的背景色yellow */
+}
+
+/* 设置为可编辑（setEditable(true)）editable时，编辑区域的样式 */
+QComboBox:editable {
+    background: green;
+}
+
+/* 设置为非编辑（setEditable(false)）!editable时，整个QComboBox的样式 */
+QComboBox:!editable {
+     background: blue;
+}
+
+/* 设置为可编辑editable时，点击整个QComboBox的样式 */
+QComboBox:editable:on {
+    background: green;
+}
+
+/* 设置为非编辑!editable时，点击整个QComboBox的样式 */
+QComboBox:!editable:on {
+     background: blue;
+}
+
+/* 设置为可编辑editable时，下拉框的样式 */
+QComboBox::drop-down:editable {
+    background: lightblue;
+}
+
+/* 设置为可编辑editable时，点击下拉框的样式 */
+QComboBox::drop-down:editable:on {
+    background: lightgreen;
+}
+
+/* 设置为非编辑!editable时，下拉框的样式 */
+QComboBox::drop-down:!editable {
+    background: lightblue;
+}
+
+/* 设置为非编辑!editable时，点击下拉框的样式 */
+QComboBox::drop-down:!editable:on {
+    background: lightgreen;
+}
+
+/* 点击QComboBox */
+QComboBox:on {
+}
+
+/* 下拉框样式 */
+QComboBox::drop-down {
+    subcontrol-origin: padding;   /* 子控件在父元素中的原点矩形。如果未指定此属性，则默认为padding。 */
+    subcontrol-position: top right;   /* 下拉框的位置（右上） */
+    width: 15px;   /* 下拉框的宽度 */
+
+    border-left-width: 1px;   /* 下拉框的左边界线宽度 */
+    border-left-color: darkgray;   /* 下拉框的左边界线颜色 */
+    border-left-style: solid;   /* 下拉框的左边界线为实线 */
+    border-top-right-radius: 3px;   /* 下拉框的右上边界线的圆角半径（应和整个QComboBox右上边界线的圆角半径一致） */
+    border-bottom-right-radius: 3px;   /* 同上 */
+}
+
+　/* 越过下拉框样式 */
+
+　QComboBox::drop-down:hover {
+
+　　　background: yellow;
+
+　}
+
+/* 下拉箭头样式 */
+ QComboBox::down-arrow {
+　　width: 15px; /* 下拉箭头的宽度（建议与下拉框drop-down的宽度一致） */ 
+　　background: transparent; /* 下拉箭头的的背景色 */ 
+　　padding: 0px 0px 0px 0px; /* 上内边距、右内边距、下内边距、左内边距 */
+
+　　image: url(":/res/arrow_down.png");
+ } 
+
+/* 点击下拉箭头 */
+ QComboBox::down-arrow:on { 
+　　image: url(":/res/arrow_up.png"); /* 显示上拉箭头 */
+ }
+

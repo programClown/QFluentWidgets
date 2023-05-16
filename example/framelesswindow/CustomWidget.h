@@ -1,0 +1,4 @@
+﻿#ifndef CUSTOMWIDGET_H
+#define CUSTOMWIDGET_H
+
+#endif  // CUSTOMWIDGET_H

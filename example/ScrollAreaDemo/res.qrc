@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resource/demo.qss</file>
+        <file>resource/shoko.jpg</file>
+    </qresource>
+</RCC>
