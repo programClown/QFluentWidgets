@@ -15,6 +15,7 @@
 
 TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 {
+    Q_INIT_RESOURCE(qframelesswindow);
     minBtn   = new MinimizeButton(this);
     closeBtn = new CloseButton(this);
     maxBtn   = new MaximizeButton(this);

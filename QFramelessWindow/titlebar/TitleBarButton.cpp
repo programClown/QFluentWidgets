@@ -5,6 +5,7 @@
 #include <QSvgRenderer>
 #include <QDebug>
 #include <QMouseEvent>
+#include <QPainterPath>
 
 TitleBarButton::TitleBarButton(QWidget *parent)
     : QAbstractButton(parent),

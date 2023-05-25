@@ -37,25 +37,19 @@ CONFIG(debug, release|debug){
 }
 
 SOURCES += \
-    QFramelessWindow.cpp \
     titlebar/TitleBar.cpp \
     titlebar/TitleBarButton.cpp \
     utils/Win32Utils.cpp \
-    windows/WindowsFramelessDialog.cpp \
-    windows/WindowsFramelessWidget.cpp \
-    windows/WindowsFramelessWindow.cpp \
-    windows/WindowsWindowEffect.cpp
+    widgetResizeHandler/WidgetResizeHandler.cpp \
+    windows/WindowsFramelessHelper.cpp
 
 HEADERS += \
     QFramelessWindow.h \
     titlebar/TitleBar.h \
     titlebar/TitleBarButton.h \
     utils/Win32Utils.h \
-    windows/WindowCompositionAttribute.h \
-    windows/WindowsFramelessDialog.h \
-    windows/WindowsFramelessWidget.h \
-    windows/WindowsFramelessWindow.h \
-    windows/WindowsWindowEffect.h
+    widgetResizeHandler/WidgetResizeHandler.h \
+    windows/WindowsFramelessHelper.h
 
 #-------------------------------------------------------------------------------
 # Build options
