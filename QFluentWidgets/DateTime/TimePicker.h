@@ -30,7 +30,7 @@ class MiniuteFormatter : public DigitFormatter
 public:
     explicit MiniuteFormatter(QObject *parent = nullptr) : DigitFormatter(parent) { }
 
-    QVariant encode(const QVariant &minute) override
+    QString encode(const QVariant &minute) override
     {
         QString min = minute.toString();
         min         = min.rightJustified(2, '0');
@@ -44,15 +44,15 @@ class AMHourFormatter : public DigitFormatter
 public:
     explicit AMHourFormatter(QObject *parent = nullptr) : DigitFormatter(parent) { }
 
-    QVariant encode(const QVariant &hour) override
+    QString encode(const QVariant &hour) override
     {
         int h = hour.toInt();
 
         if (h == 0 || h == 12) {
-            return 12;
+            return QString::number(12);
         }
 
-        return h % 12;
+        return QString::number(h % 12);
     }
 };
 
@@ -66,7 +66,7 @@ public:
         PM = tr("PM");
     }
 
-    QVariant encode(const QVariant &hour) override
+    QString encode(const QVariant &hour) override
     {
         bool ok;
         int h = hour.toInt(&ok);

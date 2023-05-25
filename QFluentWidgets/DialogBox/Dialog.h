@@ -11,12 +11,10 @@
 
 class PrimaryPushButton;
 
-class MessageBoxBase : public QObject
+class MessageBoxBase
 {
-    Q_OBJECT
-public:
-    explicit MessageBoxBase(QObject *parent = nullptr);
 
+public:
     QLabel *titleLabel   = nullptr;
     QLabel *contentLabel = nullptr;
 
@@ -37,14 +35,6 @@ private:
     void setQss();
     void initLayout();
 
-private slots:
-    void onYesButtonClicked();
-    void onCancelButtonClicked();
-
-signals:
-    void yesSignal();
-    void cancelSignal();
-
 private:
     QString m_content;
     QWidget *m_selfWidget = nullptr;
@@ -52,10 +42,19 @@ private:
 
 class Dialog : public QDialog, public MessageBoxBase
 {
+    Q_OBJECT
 public:
     explicit Dialog(const QString &title, const QString &content, QWidget *parent = nullptr);
 
     void setTitleBarVisible(bool isVisible);
+
+signals:
+    void yesSignal();
+    void cancelSignal();
+
+private slots:
+    void onYesButtonClicked();
+    void onCancelButtonClicked();
 
 private:
     QLabel *m_windowTitleLabel;
@@ -63,12 +62,19 @@ private:
 
 class MessageBox : public MaskDialogBase, public MessageBoxBase
 {
+    Q_OBJECT
 public:
     explicit MessageBox(const QString &title, const QString &content, QWidget *parent = nullptr);
 
-    // QObject interface
-public:
     bool eventFilter(QObject *watched, QEvent *event) override;
+
+signals:
+    void yesSignal();
+    void cancelSignal();
+
+private slots:
+    void onYesButtonClicked();
+    void onCancelButtonClicked();
 };
 
 #endif  // DIALOG_H

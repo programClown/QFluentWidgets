@@ -4,6 +4,7 @@
 #include <QPainter>
 #include <QSvgRenderer>
 #include <QDebug>
+#include <QMouseEvent>
 
 TitleBarButton::TitleBarButton(QWidget *parent)
     : QAbstractButton(parent),
@@ -113,6 +114,9 @@ QVector<QColor> TitleBarButton::getColors()
 
 void TitleBarButton::mousePressEvent(QMouseEvent *event)
 {
+    if (event->button() != Qt::LeftButton) {
+        return;
+    }
     setState(TitleBarButtonState::PRESSED);
     QAbstractButton::mousePressEvent(event);
 }

@@ -31,9 +31,9 @@ void TimePicker::setTime(const QTime &time)
 
     this->time = time;
 
-    setColumnValue(0, time.hour());
-    setColumnValue(1, time.minute());
-    setColumnValue(2, time.second());
+    setColumnValue(0, QString::number(time.hour()));
+    setColumnValue(1, QString::number(time.minute()));
+    setColumnValue(2, QString::number(time.second()));
 }
 
 void TimePicker::setSecondVisible(bool visible)
@@ -128,10 +128,10 @@ void AMTimePicker::setTime(const QTime &time)
 
     this->time = time;
 
-    setColumnValue(0, time.hour());
-    setColumnValue(1, time.minute());
-    setColumnValue(2, time.second());
-    setColumnValue(3, time.hour());
+    setColumnValue(0, QString::number(time.hour()));
+    setColumnValue(1, QString::number(time.minute()));
+    setColumnValue(2, QString::number(time.second()));
+    setColumnValue(3, QString::number(time.hour()));
 }
 
 void AMTimePicker::setSecondVisible(bool visible)

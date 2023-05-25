@@ -9,7 +9,7 @@
 MaskDialogBase::MaskDialogBase(QWidget *parent) : QDialog(parent)
 {
     m_hBoxLayout = new QHBoxLayout(this);
-    m_windowMask = new QWidget(this);
+    windowMask   = new QWidget(this);
 
     // dialog box in the center of mask, all widgets take it as parent
     widget = new QFrame(this);
@@ -25,8 +25,8 @@ MaskDialogBase::MaskDialogBase(QWidget *parent) : QDialog(parent)
 
     int c = QFWIns.isDarkTheme() ? 0 : 255;
 
-    m_windowMask->resize(this->size());
-    m_windowMask->setStyleSheet(QString("background:rgba({%1}, {%2}, {%3}, 0.6)").arg(c).arg(c).arg(c));
+    windowMask->resize(this->size());
+    windowMask->setStyleSheet(QString("background:rgba({%1}, {%2}, {%3}, 0.6)").arg(c).arg(c).arg(c));
     m_hBoxLayout->addWidget(widget);
     setLayout(m_hBoxLayout);
     this->setShadowEffect();
@@ -45,11 +45,11 @@ void MaskDialogBase::setShadowEffect(float blurRadius, const QPointF &offset, co
 
 void MaskDialogBase::setMaskColor(const QColor &color)
 {
-    m_windowMask->setStyleSheet(QString("background: rgba(%1, %2, %3, %4)")
-                                        .arg(color.red())
-                                        .arg(color.green())
-                                        .arg(color.blue())
-                                        .arg(color.alpha()));
+    windowMask->setStyleSheet(QString("background: rgba(%1, %2, %3, %4)")
+                                      .arg(color.red())
+                                      .arg(color.green())
+                                      .arg(color.blue())
+                                      .arg(color.alpha()));
 }
 
 bool MaskDialogBase::eventFilter(QObject *watched, QEvent *event)
@@ -66,7 +66,7 @@ bool MaskDialogBase::eventFilter(QObject *watched, QEvent *event)
 
 void MaskDialogBase::resizeEvent(QResizeEvent * /*event*/)
 {
-    m_windowMask->resize(this->size());
+    windowMask->resize(this->size());
 }
 
 /// fade out

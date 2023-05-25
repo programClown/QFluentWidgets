@@ -7,6 +7,7 @@
 #include <QPainter>
 #include <QApplication>
 #include <QScreen>
+#include <QDebug>
 
 ItemMaskWidget::ItemMaskWidget(const QList<CycleListWidget *> &list, QWidget *parent)
     : QWidget(parent), listWidgets(list)
@@ -93,6 +94,10 @@ PickerColumnButton::PickerColumnButton(const QString &name, const QVariantList &
 
 QVariantList PickerColumnButton::items() const
 {
+    QVariantList ret;
+    for (const auto &item : m_items) {
+        ret.append(m_formatter->encode(item));
+    }
     return m_items;
 }
 
@@ -103,7 +108,11 @@ void PickerColumnButton::setItems(const QVariantList &items)
 
 QString PickerColumnButton::value() const
 {
-    return m_value;
+    if (m_value.isEmpty()) {
+        return m_value;
+    }
+
+    return m_formatter->encode(m_value);
 }
 
 void PickerColumnButton::setValue(const QString &value)
@@ -247,11 +256,11 @@ QStringList PickerBase::value() const
     return ret;
 }
 
-void PickerBase::setColumnValue(int index, int value)
+void PickerBase::setColumnValue(int index, const QString &value)
 {
     checkColumnIndex(index);
 
-    columns[index]->setValue(QString::number(value));
+    columns[index]->setValue(value);
 }
 
 void PickerBase::setColumnFormatter(int index, PickerColumnFormatter *formatter)
@@ -311,6 +320,7 @@ void PickerBase::clearColumns()
 
 void PickerBase::showPanel()
 {
+    qDebug() << __FUNCTION__ << __LINE__ << this->panelInitialValue();
     PickerPanel *panel = new PickerPanel(this);
 
     for (auto column : columns) {
@@ -329,13 +339,15 @@ void PickerBase::showPanel()
 
 void PickerBase::onConfirmed(const QStringList &value)
 {
+    qDebug() << __FUNCTION__ << __LINE__;
     for (int i = 0; i < value.count(); ++i) {
-        setColumnValue(i, value.at(i).toInt());
+        setColumnValue(i, value.at(i));
     }
 }
 
 void PickerBase::onColumnValueChanged(PickerPanel *panel, int index, const QString &value)
 {
+    qDebug() << __FUNCTION__ << __LINE__;
     Q_UNUSED(panel)
     Q_UNUSED(index)
     Q_UNUSED(value)
@@ -423,7 +435,7 @@ void PickerPanel::initWidget()
     m_cancelButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     connect(m_yesButton, &TransparentToolButton::clicked, this, &PickerPanel::fadeOut);
-    connect(m_yesButton, &TransparentToolButton::clicked, [=]() { emit confirmed(this->value()); });
+    connect(m_yesButton, &TransparentToolButton::clicked, [this]() { emit confirmed(this->value()); });
     connect(m_cancelButton, &TransparentToolButton::clicked, this, &PickerPanel::fadeOut);
 
     m_view->setObjectName("view");
@@ -451,7 +463,7 @@ void PickerPanel::addColumn(const QVariantList &items, int width, Qt::AlignmentF
 
     const int N = m_listWidgets.count();
     connect(w, &CycleListWidget::currentItemChanged,
-            [=](QListWidgetItem *item) { emit columnValueChanged(N, item->text()); });
+            [N, this](QListWidgetItem *item) { emit columnValueChanged(N, item->text()); });
 
     m_listWidgets.append(w);
     m_listLayout->addWidget(w);

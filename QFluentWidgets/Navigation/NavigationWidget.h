@@ -12,7 +12,7 @@ public:
 
     explicit NavigationWidget(bool selectable, QWidget *parent = nullptr);
 
-    void setCompacted(bool compacted);
+    virtual void setCompacted(bool compacted);
     void setSelected(bool selected);
 
     bool isCompacted;
@@ -65,7 +65,7 @@ class NavigationSeparator : public NavigationWidget
 public:
     explicit NavigationSeparator(QWidget *parent = nullptr);
 
-    void setCompacted(bool compacted);
+    void setCompacted(bool compacted) override;
 
     // QWidget interface
 protected:

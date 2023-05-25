@@ -7,14 +7,12 @@
 struct CharWidthType
 {
     int num;
-    int wid;
+    int width;
 };
 
 class TextWrap
 {
 public:
-    TextWrap();
-
     /// Return the screen column width for a char
     static int getWidth(QChar c);
 

@@ -55,7 +55,7 @@ QString ScrollIcon::typeName() const
     return m_name;
 }
 
-ScrollButton::ScrollButton(ScrollIconSPtr icon, QWidget *parent) : QToolButton(parent), m_icon(icon), isPressed(false)
+ScrollButton::ScrollButton(ScrollIconSPtr icon, QWidget *parent) : QToolButton(parent), isPressed(false), m_icon(icon)
 {
     installEventFilter(this);
 }
@@ -215,7 +215,7 @@ bool CycleListWidget::eventFilter(QObject *watched, QEvent *event)
     }
 
     if (event->type() == QEvent::KeyPress) {
-        QKeyEvent *keyEvt = dynamic_cast<QKeyEvent *>(event);
+        QKeyEvent *keyEvt = static_cast<QKeyEvent *>(event);
         if (keyEvt->key() == Qt::Key_Down) {
             scrollDown();
             return true;

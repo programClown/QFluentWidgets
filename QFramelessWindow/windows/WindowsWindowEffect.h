@@ -1,9 +1,9 @@
 ﻿#ifndef WINDOWSWINDOWEFFECT_H
 #define WINDOWSWINDOWEFFECT_H
 
-#include <QWidget>
-
 #include "WindowCompositionAttribute.h"
+
+#include <QWidget>
 
 struct ACCENT_POLICY;
 struct WINDOWCOMPOSITIONATTRIBDATA;

@@ -2,9 +2,9 @@
 #define QFLUENTWIDGETS_H
 
 #include <QObject>
-#include <QSettings>
 #include "Common/Theme.h"
 #include "Common/StyleSheet.h"
+#include "Common/Config.h"
 
 /**
  * @brief 库style，theme管理，单例
@@ -24,6 +24,8 @@ public:
         return single;
     }
 
+    void setConfigPath(const QString &path);
+
     /************************** theme start **************************/
 
     Qfw::Theme theme() const;
@@ -42,10 +44,9 @@ signals:
 private:
     QFluentWidgets();
 
-    QScopedPointer<QSettings> m_settings;
-
     Qfw::Theme m_theme;
     QColor m_themeColor;
+    QScopedPointer<Qfw::QConfig> m_config;
 };
 
 #define QFWIns (QFluentWidgets::ins())

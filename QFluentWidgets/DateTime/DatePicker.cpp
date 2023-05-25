@@ -119,9 +119,9 @@ void DatePicker::setDate(const QDate &date)
 
     this->date = date;
 
-    setColumnValue(m_monthIndex, date.month());
-    setColumnValue(m_dayIndex, date.day());
-    setColumnValue(m_yearIndex, date.year());
+    setColumnValue(m_monthIndex, QString::number(date.month()));
+    setColumnValue(m_dayIndex, QString::number(date.day()));
+    setColumnValue(m_yearIndex, QString::number(date.year()));
 
     QVariantList range;
     for (int i = 1; i < date.daysInMonth() + 1; ++i) {

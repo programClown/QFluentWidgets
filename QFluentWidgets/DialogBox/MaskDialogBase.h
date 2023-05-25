@@ -16,6 +16,7 @@ public:
     void setMaskColor(const QColor &color);
 
     QFrame *widget;
+    QWidget *windowMask;
 
     // QWidget interface
     QHBoxLayout *hBoxLayout() const;
@@ -30,7 +31,6 @@ signals:
 
 private:
     QHBoxLayout *m_hBoxLayout;
-    QWidget *m_windowMask;
 };
 
 #endif  // MASKDIALOGBASE_H

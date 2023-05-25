@@ -7,18 +7,21 @@
 #include <QDebug>
 #include <QEvent>
 
-MessageBoxBase::MessageBoxBase(QObject *parent) : QObject(parent) { }
-
 void MessageBoxBase::setUpUi(const QString &title, const QString &content, QWidget *parent)
 {
-    m_content    = content;
-    m_selfWidget = parent;  //真正的窗口子类
-    titleLabel   = new QLabel(title, parent);
+    m_content     = content;
+    m_selfWidget  = parent;  //真正的窗口子类
+    QString magic = title;
+    for (int i = 0; i < title.count(); ++i) {
+        magic.append(" ");
+    }
+    titleLabel   = new QLabel(magic, parent);
     contentLabel = new QLabel(content, parent);
+    contentLabel->setWordWrap(true);
 
     buttonGroup  = new QFrame(parent);
-    yesButton    = new PrimaryPushButton(tr("OK"), buttonGroup);
-    cancelButton = new QPushButton(tr("Cancel"), buttonGroup);
+    yesButton    = new PrimaryPushButton(QObject::tr("OK"), buttonGroup);
+    cancelButton = new QPushButton(QObject::tr("Cancel"), buttonGroup);
 
     vBoxLayout   = new QVBoxLayout(parent);
     textLayout   = new QVBoxLayout();
@@ -38,7 +41,7 @@ void MessageBoxBase::adjustText()
 
     if (m_selfWidget->isWindow()) {
         if (m_selfWidget->parent()) {
-            w     = qMax(titleLabel->width(), m_selfWidget->width());
+            w     = qMax(titleLabel->width(), ((QWidget *)m_selfWidget->parent())->width());
             chars = qMax(qMin(w / 9, 140), 30);
         } else {
             chars = 100;
@@ -62,11 +65,6 @@ void MessageBoxBase::initWidget()
 
     yesButton->setFocus();
     buttonGroup->setFixedHeight(81);
-
-    adjustText();
-
-    connect(yesButton, &PrimaryPushButton::clicked, this, &MessageBoxBase::onYesButtonClicked);
-    connect(cancelButton, &QPushButton::clicked, this, &MessageBoxBase::onCancelButtonClicked);
 }
 
 void MessageBoxBase::setQss()
@@ -95,44 +93,28 @@ void MessageBoxBase::initLayout()
     textLayout->setContentsMargins(24, 24, 24, 24);
     textLayout->addWidget(titleLabel, 0, Qt::AlignTop);
     textLayout->addWidget(contentLabel, 0, Qt::AlignTop);
-
     buttonLayout->setSpacing(12);
     buttonLayout->setContentsMargins(24, 24, 24, 24);
     buttonLayout->addWidget(yesButton, 1, Qt::AlignVCenter);
     buttonLayout->addWidget(cancelButton, 1, Qt::AlignVCenter);
 }
 
-void MessageBoxBase::onYesButtonClicked()
+Dialog::Dialog(const QString &title, const QString &content, QWidget *parent) : QDialog(parent), MessageBoxBase()
 {
-    QDialog *p = qobject_cast<QDialog *>(m_selfWidget);
-    if (p) {
-        p->accept();
-    }
-    emit yesSignal();
-}
+    //补丁使用
+    setWindowFlags(this->windowFlags() | Qt::FramelessWindowHint);
 
-void MessageBoxBase::onCancelButtonClicked()
-{
-    QDialog *p = qobject_cast<QDialog *>(m_selfWidget);
-    if (p) {
-        p->reject();
-    }
-    emit cancelSignal();
-}
-
-Dialog::Dialog(const QString &title, const QString &content, QWidget *parent) : QDialog(parent), MessageBoxBase(parent)
-{
+    setFixedSize(240, 192);
     setUpUi(title, content, this);
 
-    m_windowTitleLabel = new QLabel(title, this);
+    connect(yesButton, &PrimaryPushButton::clicked, this, &Dialog::onYesButtonClicked);
+    connect(cancelButton, &QPushButton::clicked, this, &Dialog::onCancelButtonClicked);
 
-    //    setResizeEnabled(false);
-    resize(240, 192);
+    m_windowTitleLabel = new QLabel(title, this);
 
     vBoxLayout->insertWidget(0, m_windowTitleLabel, 0, Qt::AlignTop);
     m_windowTitleLabel->setObjectName("windowTitleLabel");
     FluentStyleSheet::apply("DIALOG", this);
-    setFixedSize(size());
 }
 
 void Dialog::setTitleBarVisible(bool isVisible)
@@ -140,23 +122,38 @@ void Dialog::setTitleBarVisible(bool isVisible)
     m_windowTitleLabel->setVisible(isVisible);
 }
 
-MessageBox::MessageBox(const QString &title, const QString &content, QWidget *parent)
-    : MaskDialogBase(parent), MessageBoxBase(parent)
+void Dialog::onYesButtonClicked()
 {
+    this->accept();
+    emit yesSignal();
+}
 
-    setUpUi(title, content, this);
+void Dialog::onCancelButtonClicked()
+{
+    this->reject();
+    emit cancelSignal();
+}
+
+MessageBox::MessageBox(const QString &title, const QString &content, QWidget *parent)
+    : MaskDialogBase(parent), MessageBoxBase()
+{
+    //补丁使用
+    setWindowFlags(this->windowFlags() | Qt::FramelessWindowHint);
+
+    setUpUi(title, content, this->widget);
+
+    connect(yesButton, &PrimaryPushButton::clicked, this, &MessageBox::onYesButtonClicked);
+    connect(cancelButton, &QPushButton::clicked, this, &MessageBox::onCancelButtonClicked);
 
     setShadowEffect(60, QPointF(0, 10), QColor(0, 0, 0, 50));
     setMaskColor(QColor(0, 0, 0, 76));
-
-    // TODO 布局有冲突，设计有问题
 
     hBoxLayout()->removeWidget(widget);
     hBoxLayout()->addWidget(widget, 1, Qt::AlignCenter);
 
     buttonGroup->setMinimumWidth(280);
     widget->setFixedSize(qMax(contentLabel->width(), titleLabel->width()) + 48,
-                         contentLabel->y() + contentLabel->height() + 105);
+                         contentLabel->y() + contentLabel->height() + 205);
 }
 
 bool MessageBox::eventFilter(QObject *watched, QEvent *event)
@@ -168,4 +165,16 @@ bool MessageBox::eventFilter(QObject *watched, QEvent *event)
     }
 
     return MaskDialogBase::eventFilter(watched, event);
+}
+
+void MessageBox::onYesButtonClicked()
+{
+    this->accept();
+    emit yesSignal();
+}
+
+void MessageBox::onCancelButtonClicked()
+{
+    this->reject();
+    emit cancelSignal();
 }

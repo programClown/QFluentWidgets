@@ -5,12 +5,16 @@
 
 QFluentWidgets::QFluentWidgets()
 {
-    m_settings.reset(new QSettings(QCoreApplication::applicationDirPath() + "/qfluentwidgets/qfluentwidgets.ini",
-                                   QSettings::IniFormat));
-    m_settings->setIniCodec(QTextCodec::codecForName("utf-8"));
+    m_config.reset(new Qfw::QConfig(this));
+    m_theme      = m_config->theme();
+    m_themeColor = m_config->themeColor();
+}
 
-    m_theme      = Qfw::AUTO;
-    m_themeColor = QColor("#009faa");
+void QFluentWidgets::setConfigPath(const QString &path)
+{
+    m_config.reset(new Qfw::QConfig(path, this));
+    m_theme      = m_config->theme();
+    m_themeColor = m_config->themeColor();
 }
 
 Qfw::Theme QFluentWidgets::theme() const

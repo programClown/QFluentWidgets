@@ -10,8 +10,6 @@ static CharWidthType char_widths[] = {
     { 65376, 2 }, { 65500, 1 }, { 65510, 2 }, { 120831, 1 }, { 262141, 2 }, { 1114109, 1 },
 };
 
-TextWrap::TextWrap() { }
-
 int TextWrap::getWidth(QChar c)
 {
     if (c == 0xe || c == 0xf) {
@@ -20,7 +18,7 @@ int TextWrap::getWidth(QChar c)
 
     for (auto nw : char_widths) {
         if (c <= nw.num) {
-            return nw.wid;
+            return nw.width;
         }
     }
 
@@ -53,7 +51,7 @@ QPair<QString, bool> TextWrap::wrap(const QString &text, int width, bool once)
         count += length;
 
         // record the position of blank character
-        if (c == " " || length > 1) {
+        if (c == ' ' || length > 1) {
             breakPos     = i + nInsideBreak;
             lastCount    = count;
             isBreakAlpha = (length == 1);
@@ -68,7 +66,7 @@ QPair<QString, bool> TextWrap::wrap(const QString &text, int width, bool once)
 
         // wrap at the position of the previous space
         if (breakPos > 0 && isBreakAlpha) {
-            if (c != " ") {
+            if (c != ' ') {
                 chars[breakPos] = '\n';
                 chars.append(c);
 

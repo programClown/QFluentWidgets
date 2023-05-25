@@ -3,6 +3,7 @@
 
 #include <QEvent>
 #include <QMouseEvent>
+#include <QDebug>
 
 #if defined(Q_OS_WIN32)
     #include "utils/Win32Utils.h"
@@ -20,7 +21,8 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 
     isDoubleClickEnabled = true;
 
-    QHBoxLayout *hBoxLayout = new QHBoxLayout;
+    //    QHBoxLayout *
+    hBoxLayout = new QHBoxLayout;
     setLayout(hBoxLayout);
 
     hBoxLayout->setSpacing(0);
@@ -86,10 +88,15 @@ void TitleBar::mouseDoubleClickEvent(QMouseEvent *event)
     onToggleMaxState();
 }
 
+///
+/// @attention 原本的逻辑和原文不一样，改成了一样的
 void TitleBar::mouseMoveEvent(QMouseEvent *event)
 {
 #if defined(Q_OS_WIN32)
-    Win32Utils::WindowsMoveResize::startSystemMove(this->window(), event->globalPos());
+    if (canDrag(event->pos())) {
+        Win32Utils::WindowsMoveResize::startSystemMove(this->window(), event->globalPos());
+    }
+
 #elif defined(Q_OS_OSX)
     #include "utils/macUtils.h"
 #else
@@ -97,12 +104,14 @@ void TitleBar::mouseMoveEvent(QMouseEvent *event)
 #endif
 }
 
+///
+/// @attention 原本的逻辑和原文不一样，改成了一样的
 void TitleBar::mousePressEvent(QMouseEvent *event)
 {
-#if defined(Q_OS_WIN32)
-    Win32Utils::WindowsMoveResize::startSystemMove(this->window(), event->globalPos());
-#elif defined(Q_OS_OSX)
-    #include "utils/macUtils.h"
+#if !defined(Q_OS_WIN32)
+    if (canDrag(event->pos())) {
+        Win32Utils::WindowsMoveResize::startSystemMove(this->window(), event->globalPos());
+    }
 #else
 
 #endif

@@ -8,6 +8,9 @@
 #include <QApplication>
 #include <QCloseEvent>
 #include <QScreen>
+#include <QDesktopWidget>
+
+#include <QDebug>
 
 constexpr int BORDER_WIDTH = 5;
 
@@ -69,7 +72,7 @@ TitleBar *WindowsFramelessWindow::getTitleBar() const
     return titleBar;
 }
 
-void WindowsFramelessWindow::onScreenChanged(QScreen * /*screen*/)
+void WindowsFramelessWindow::onScreenChanged(QScreen *screen)
 {
     HWND hWnd = (HWND)this->windowHandle()->winId();
     SetWindowPos(hWnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
@@ -173,6 +176,20 @@ bool WindowsFramelessWindow::nativeEvent(const QByteArray &eventType, void *mess
             }
             return true;
         } break;
+
+        case WM_GETMINMAXINFO: {
+            //解决QT无边框窗体最大化遮盖Windows任务栏问题
+            if (this->isMaximized()) {
+                int index          = QApplication::desktop()->screenNumber(this);
+                const QRect rc     = QApplication::desktop()->availableGeometry(index);
+                MINMAXINFO *p      = (MINMAXINFO *)(msg->lParam);
+                p->ptMaxPosition.x = 0;
+                p->ptMaxPosition.y = 0;
+                p->ptMaxSize.x     = rc.width();
+                p->ptMaxSize.y     = rc.height();
+                *result            = ::DefWindowProc(msg->hwnd, msg->message, msg->wParam, msg->lParam);
+            }
+        }
     }
 
     return QWidget::nativeEvent(eventType, message, result);

@@ -21,7 +21,7 @@ public:
                               "list, the folder will no longer appear in "
                               "the list, but will not be deleted.";
 
-            Dialog w(title, content);
+            Dialog w(title, content, this);
             w.setTitleBarVisible(false);
             if (w.exec()) {
                 qDebug() << "Yes button is pressed";

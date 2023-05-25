@@ -31,7 +31,7 @@ bool WindowsWindowEffect::setAcrylicEffect(HWND hWnd, std::string gradientColor,
         accentFlags = 0x20 | 0x40 | 0x80 | 0x100;
     }
 
-    this->accentPolicy.AccentState   = ACCENT_STATE::ACCENT_ENABLE_ACRYLICBLURBEHIND;
+    this->accentPolicy.AccentState   = ACCENT_STATE::ACCENT_ENABLE_BLURBEHIND;
     this->accentPolicy.GradientColor = gradientColorValue;
     this->accentPolicy.AccentFlags   = accentFlags;
     this->accentPolicy.AnimationId   = animationId;

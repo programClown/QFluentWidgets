@@ -87,7 +87,7 @@ class Window : public QWidget
 public:
     explicit Window(QWidget *parent = nullptr) : QWidget(parent)
     {
-        hBoxLayout          = new QHBoxLayout(this);
+        hBoxLayout          = new QHBoxLayout();
         navigationInterface = new NavigationInterface(true, true);
         stackWidget         = new QStackedWidget();
         // create sub interface;
@@ -129,10 +129,19 @@ private:
                                      SLOT(musicInterfaceClick()));
         navigationInterface->addItem(videoInterface->objectName(), NEWFLICON(FluentIcon::VIDEO), "Video library", this,
                                      SLOT(videoInterfaceClick()));
+
         navigationInterface->addSeparator();
         // add navigation items to scroll area
         navigationInterface->addItem(folderInterface->objectName(), NEWFLICON(FluentIcon::FOLDER), "Folder library",
                                      this, SLOT(folderInterfaceClick()), true, NavigationItemPosition::SCROLL);
+
+        for (int i = 1; i <= 20; i++) {
+
+            QString name = QString("Folder %1").arg(i);
+
+            navigationInterface->addItem(name, NEWFLICON(FluentIcon::FOLDER), name, this, SLOT(folderInterfaceClick()),
+                                         true, NavigationItemPosition::SCROLL);
+        }
 
         // add custom widget to bottom
         navigationInterface->addWidget("avatar", new AvatarWidget(this), this, SLOT(showMessageBox()),

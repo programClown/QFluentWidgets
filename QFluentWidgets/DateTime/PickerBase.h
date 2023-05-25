@@ -50,9 +50,9 @@ class PickerColumnFormatter : public QObject
 public:
     PickerColumnFormatter(QObject *parent = nullptr) : QObject(parent) { }
 
-    virtual QVariant encode(const QVariant &value) { return value; }
+    virtual QString encode(const QVariant &value) { return value.toString(); }
 
-    virtual QVariant decode(const QVariant &value) { return value; }
+    virtual QString decode(const QVariant &value) { return value.toString(); }
 };
 
 class DigitFormatter : public PickerColumnFormatter
@@ -61,7 +61,7 @@ class DigitFormatter : public PickerColumnFormatter
 public:
     DigitFormatter(QObject *parent = nullptr) : PickerColumnFormatter(parent) { }
 
-    //    virtual QVariant decode(const QVariant &value) { return value.toInt(); }
+    virtual QString decode(const QVariant &value) { return QString::number(value.toInt()); }
 };
 
 class PickerColumnButton : public QPushButton
@@ -107,7 +107,7 @@ public:
     void setColumnTight(int index);
     void setColumnVisible(int index, bool visible);
     QStringList value() const;
-    void setColumnValue(int index, int value);
+    void setColumnValue(int index, const QString &value);
     void setColumnFormatter(int index, PickerColumnFormatter *formatter);
     void setColumnItems(int index, const QVariantList &items);
     QVariant encodeValue(int index, const QVariant &value);

@@ -13,6 +13,7 @@ SUBDIRS += \
     LineEditDemo \
     MessageDialogDemo \
     NavigationDemo \
+    QFramelessWindowDemo\
     RadioButtonDemo \
     ScrollAreaDemo \
     SliderDemo \
@@ -20,6 +21,8 @@ SUBDIRS += \
     StateToolTipDemo \
     SwitchButtonDemo \
     TimePickerDemo \
+    ToolTipDemo \
+    TreeViewDemo \
     framelesswindow \
     gallery \
     openglwidget

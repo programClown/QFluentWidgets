@@ -44,7 +44,10 @@ SOURCES += \
     DialogBox/FolderListDialog.cpp \
     DialogBox/HuePanel.cpp \
     DialogBox/MaskDialogBase.cpp \
+    DialogBox/MessageDialog.cpp \
+    Layout/ExpandLayout.cpp \
     Layout/FlowLayout.cpp \
+    Layout/VBoxLayout.cpp \
     Navigation/NavigationInterface.cpp \
     Navigation/NavigationPanel.cpp \
     Navigation/NavigationWidget.cpp \
@@ -52,7 +55,12 @@ SOURCES += \
     Common/AutoWrap.cpp \
     Common/ImageUtils.cpp \
     Common/StyleSheet.cpp \
+    Settings/CustomColorSettingCard.cpp \
+    Settings/ExpandGroupSettingCard.cpp \
+    Settings/FolderListSettingCard.cpp \
+    Settings/OptionsSettingCard.cpp \
     Settings/SettingCard.cpp \
+    Settings/SettingCardGroup.cpp \
     Widgets/AcrylicLabel.cpp \
     Widgets/Button.cpp \
     Widgets/CheckBox.cpp \
@@ -71,7 +79,8 @@ SOURCES += \
     Widgets/StateToolTip.cpp \
     Widgets/SwitchButton.cpp \
     Widgets/ThreeStateButton.cpp \
-    Widgets/ToolTip.cpp
+    Widgets/ToolTip.cpp \
+    Widgets/TreeView.cpp
 
 HEADERS += \
     Common/Config.h \
@@ -87,7 +96,10 @@ HEADERS += \
     DialogBox/FolderListDialog.h \
     DialogBox/HuePanel.h \
     DialogBox/MaskDialogBase.h \
+    DialogBox/MessageDialog.h \
+    Layout/ExpandLayout.h \
     Layout/FlowLayout.h \
+    Layout/VBoxLayout.h \
     Navigation/NavigationInterface.h \
     Navigation/NavigationPanel.h \
     Navigation/NavigationWidget.h \
@@ -95,7 +107,12 @@ HEADERS += \
     Common/AutoWrap.h \
     Common/ImageUtils.h \
     Common/StyleSheet.h \
+    Settings/CustomColorSettingCard.h \
+    Settings/ExpandGroupSettingCard.h \
+    Settings/FolderListSettingCard.h \
+    Settings/OptionsSettingCard.h \
     Settings/SettingCard.h \
+    Settings/SettingCardGroup.h \
     Widgets/AcrylicLabel.h \
     Widgets/Button.h \
     Widgets/CheckBox.h \
@@ -114,7 +131,8 @@ HEADERS += \
     Widgets/StateToolTip.h \
     Widgets/SwitchButton.h \
     Widgets/ThreeStateButton.h \
-    Widgets/ToolTip.h
+    Widgets/ToolTip.h \
+    Widgets/TreeView.h
 
 #-------------------------------------------------------------------------------
 # Build options

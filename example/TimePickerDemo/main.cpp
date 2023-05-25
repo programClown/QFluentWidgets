@@ -12,9 +12,9 @@ class SecondsFormatter : public PickerColumnFormatter
 public:
     SecondsFormatter(QObject *parent = nullptr) : PickerColumnFormatter(parent) { }
 
-    QVariant encode(const QVariant &value) override { return value.toString() + "秒"; }
+    QString encode(const QVariant &value) override { return value.toString() + "秒"; }
 
-    QVariant decode(const QVariant &value) override { return value.toString().left(value.toString().count() - 1); }
+    QString decode(const QVariant &value) override { return value.toString().left(value.toString().count() - 1); }
 };
 
 class Demo : public QWidget

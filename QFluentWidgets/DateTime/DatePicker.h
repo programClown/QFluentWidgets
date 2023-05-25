@@ -25,9 +25,9 @@ private:
 
     // PickerColumnFormatter interface
 public:
-    QVariant encode(const QVariant &month) override { return m_months[month.toInt() - 1]; }
+    QString encode(const QVariant &month) override { return m_months[month.toInt() - 1]; }
 
-    QVariant decode(const QVariant &value) override { return m_months.indexOf(value.toString()) + 1; }
+    QString decode(const QVariant &value) override { return QString::number(m_months.indexOf(value.toString()) + 1); }
 };
 
 class DatePickerBase : public PickerBase
@@ -36,6 +36,12 @@ class DatePickerBase : public PickerBase
 public:
     explicit DatePickerBase(QWidget *parent = nullptr) : PickerBase(parent)
     {
+        date = QDate();
+
+#if (QT_VERSION > QT_VERSION_CHECK(5, 14, 0))
+        calendar = QCalendar();
+#endif
+
         m_yearFormatter  = nullptr;
         m_monthFormatter = nullptr;
         m_dayFormatter   = nullptr;
@@ -142,9 +148,9 @@ public:
 
     // PickerColumnFormatter interface
 public:
-    QVariant encode(const QVariant &value) override { return value.toString() + suffix; }
+    QString encode(const QVariant &value) override { return value.toString() + suffix; }
 
-    QVariant decode(const QVariant &value) override
+    QString decode(const QVariant &value) override
     {
         QString date = value.toString();
         if (date.isEmpty()) {

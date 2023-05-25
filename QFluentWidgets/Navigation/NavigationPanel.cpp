@@ -320,7 +320,7 @@ void NavigationPanel::addWidgetToLayout(NavigationWidget *widget, NavigationItem
         topLayout->addWidget(widget, 0, Qt::AlignTop);
     } else if (position == NavigationItemPosition::SCROLL) {
         widget->setParent(scrollWidget);
-        topLayout->addWidget(widget, 0, Qt::AlignTop);
+        scrollLayout->addWidget(widget, 0, Qt::AlignTop);
     } else {
         widget->setParent(this);
         bottomLayout->addWidget(widget, 0, Qt::AlignBottom);
@@ -363,7 +363,6 @@ void NavigationPanel::toggle()
 NavigationHistory::NavigationHistory(const QHash<QString, NavigationWidget *> &items, QObject *parent)
     : QObject(parent), m_items(items)
 {
-
     m_defaultRouteKey = QString();
 }
 
