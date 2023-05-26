@@ -8,8 +8,6 @@
 
 AWindow::AWindow(QWidget *parent) : AcrylicWindow(parent)
 {
-    qDebug() << __FUNCTION__ << __LINE__ << getTitleBar();
-
     // 窗口效果
     getWindowEffect()->setAcrylicEffect((HWND)winId());
     setStyleSheet("background:rgba(232, 232, 232, 150)");

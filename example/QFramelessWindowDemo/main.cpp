@@ -19,7 +19,5 @@ int main(int argc, char *argv[])
 
     wf.show();
 
-    qDebug() << __FUNCTION__ << __LINE__ << QFluentWidgets::ins().themeName();
-
     return a.exec();
 }

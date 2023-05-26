@@ -43,6 +43,7 @@ void ItemMaskWidget::paintEvent(QPaintEvent * /*event*/)
         // draw first item's text
         int x                  = p->itemSize().width() / 2 + 4 + this->x();
         QListWidgetItem *item1 = p->itemAt(QPoint(x, this->y() + 6));
+        item1                  = p->currentItem();
         if (!item1) {
             painter.restore();
             continue;
@@ -98,7 +99,7 @@ QVariantList PickerColumnButton::items() const
     for (const auto &item : m_items) {
         ret.append(m_formatter->encode(item));
     }
-    return m_items;
+    return ret;
 }
 
 void PickerColumnButton::setItems(const QVariantList &items)
@@ -290,6 +291,9 @@ QVariant PickerBase::decodeValue(int index, const QVariant &value)
     if (index < 0 || index >= this->columns.count())
         return QVariant();
 
+    PickerColumnFormatter *f = columns.at(index)->formatter();
+    QVariant v               = f->decode(value);
+
     return columns.at(index)->formatter()->decode(value);
 }
 
@@ -320,7 +324,6 @@ void PickerBase::clearColumns()
 
 void PickerBase::showPanel()
 {
-    qDebug() << __FUNCTION__ << __LINE__ << this->panelInitialValue();
     PickerPanel *panel = new PickerPanel(this);
 
     for (auto column : columns) {
@@ -339,7 +342,6 @@ void PickerBase::showPanel()
 
 void PickerBase::onConfirmed(const QStringList &value)
 {
-    qDebug() << __FUNCTION__ << __LINE__;
     for (int i = 0; i < value.count(); ++i) {
         setColumnValue(i, value.at(i));
     }
@@ -347,7 +349,6 @@ void PickerBase::onConfirmed(const QStringList &value)
 
 void PickerBase::onColumnValueChanged(PickerPanel *panel, int index, const QString &value)
 {
-    qDebug() << __FUNCTION__ << __LINE__;
     Q_UNUSED(panel)
     Q_UNUSED(index)
     Q_UNUSED(value)
@@ -431,6 +432,7 @@ void PickerPanel::initWidget()
     m_buttonLayout->setContentsMargins(3, 3, 3, 3);
     m_buttonLayout->addWidget(m_yesButton);
     m_buttonLayout->addWidget(m_cancelButton);
+
     m_yesButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_cancelButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -466,6 +468,7 @@ void PickerPanel::addColumn(const QVariantList &items, int width, Qt::AlignmentF
             [N, this](QListWidgetItem *item) { emit columnValueChanged(N, item->text()); });
 
     m_listWidgets.append(w);
+    m_itemMaskWidget->listWidgets = m_listWidgets;
     m_listLayout->addWidget(w);
 }
 
@@ -496,6 +499,9 @@ QString PickerPanel::columnValue(int index) const
     if (index < 0 || index >= m_listWidgets.count()) {
         return "";
     }
+
+    CycleListWidget *w = m_listWidgets.at(index);
+    QString s          = w->currentItem()->text();
 
     return m_listWidgets.at(index)->currentItem()->text();
 }

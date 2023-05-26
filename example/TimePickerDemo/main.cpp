@@ -43,8 +43,10 @@ public:
 
         // et current date/time
         datePicker1->setDate(QDate::currentDate());
-        timePicker1->setTime(QTime(13, 15));
+        datePicker2->setDate(QDate::currentDate());
+        timePicker1->setTime(QTime(4, 15));
         timePicker2->setTime(QTime(13, 15));
+        timePicker3->setTime(QTime(15, 36, 42));
 
         resize(500, 500);
         vBoxLayout->addWidget(datePicker1, 0, Qt::AlignHCenter);

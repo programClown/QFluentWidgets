@@ -152,8 +152,9 @@ void DatePicker::onColumnValueChanged(PickerPanel *panel, int index, const QStri
     }
 
     // get days number in month
-    int month = this->decodeValue(m_monthIndex, panel->columnValue(m_monthIndex)).toInt();
-    int year  = this->decodeValue(m_yearIndex, panel->columnValue(m_yearIndex)).toInt();
+    QVariant m = this->decodeValue(m_monthIndex, panel->columnValue(m_monthIndex));
+    int month  = this->decodeValue(m_monthIndex, panel->columnValue(m_monthIndex)).toInt();
+    int year   = this->decodeValue(m_yearIndex, panel->columnValue(m_yearIndex)).toInt();
     QDate tmp(year, month, 1);
     int days = tmp.daysInMonth();
 

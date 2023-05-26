@@ -175,7 +175,7 @@ void AMTimePicker::onConfirmed(const QStringList &value)
     m = this->decodeValue(1, value[1]).toInt();
 
     if (value.count() == 3) {
-        p = this->decodeValue(2, value[2]).toString();
+        p = this->decodeValue(3, value[2]).toString();
         s = 0;
     } else {
         s = this->decodeValue(2, value[2]).toInt();
