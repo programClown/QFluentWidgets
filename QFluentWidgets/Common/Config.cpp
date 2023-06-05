@@ -11,7 +11,10 @@ ConfigItem::ConfigItem(const QString &_group, const QString &_name, const QVaria
 {
 }
 
-void ConfigItem::setValue(const QVariant &value) { }
+void ConfigItem::setValue(const QVariant &value)
+{
+    m_value = value;
+}
 
 QVariant ConfigItem::value() const
 {

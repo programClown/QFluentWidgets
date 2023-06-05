@@ -9,7 +9,7 @@
 #include <QDebug>
 #include <QTextEdit>
 
-FWindow::FWindow(QWidget *parent) : FramelessMainWindow(parent)
+FWindow::FWindow(QWidget *parent) : WindowsFramelessWindow(parent)
 {
 
     // add title bar
@@ -31,7 +31,6 @@ FWindow::FWindow(QWidget *parent) : FramelessMainWindow(parent)
 
     menuBar->addAction("Edit(&E)");
     menuBar->addAction("Select(&S)");
-    menuBar->addAction("Help(&H)", this, &FWindow::showHelpDialog);
 
     ttb->hBoxLayout->insertWidget(0, menuBar, 0, Qt::AlignLeft);
     ttb->hBoxLayout->insertStretch(1, 1);
@@ -51,16 +50,4 @@ FWindow::FWindow(QWidget *parent) : FramelessMainWindow(parent)
     setCentralWidget(text);
 
     resize(800, 600);
-}
-
-void FWindow::showHelpDialog()
-{
-    FramelessDialog *d = new FramelessDialog(this);
-    d->setLayout(new QHBoxLayout);
-    d->layout()->addWidget(new QLabel("Frameless Dialog"));
-    d->getTitleBar()->raise();
-    d->resize(300, 300);
-
-    d->setResizeEnabled(false);
-    d->exec();
 }

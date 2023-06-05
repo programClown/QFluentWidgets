@@ -337,7 +337,7 @@ QString FluentIcon::path()
             c = "white";
         }
 
-        return QString(":/qfluentwidgets/images/icons/%1_%2.svg").arg(iconName(m_type)).arg(c);
+        return QString("../QFluentWidgets/images/icons/%1_%2.svg").arg(iconName(m_type)).arg(c);
     }
 
     return m_file;

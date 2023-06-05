@@ -11,11 +11,25 @@ include($$PWD/../baseconfig.pri)
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    common/GalleryConfig.cpp \
+    common/GalleryStyleSheet.cpp \
+    common/SignalBus.cpp \
+    components/AvatarWidget.cpp \
+    components/LinkCard.cpp \
     main.cpp \
-    MainWindow.cpp
+    view/GalleryTitleBar.cpp \
+    view/HomeInterface.cpp \
+    view/MainWindow.cpp
 
 HEADERS += \
-    MainWindow.h
+    common/GalleryConfig.h \
+    common/GalleryStyleSheet.h \
+    common/SignalBus.h \
+    components/AvatarWidget.h \
+    components/LinkCard.h \
+    view/GalleryTitleBar.h \
+    view/HomeInterface.h \
+    view/MainWindow.h
 
 FORMS += \
     MainWindow.ui
@@ -24,3 +38,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    resource.qrc

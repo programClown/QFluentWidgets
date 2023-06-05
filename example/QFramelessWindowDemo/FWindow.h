@@ -3,13 +3,12 @@
 
 #include "QFramelessWindow.h"
 
-class FWindow : public FramelessMainWindow
+#include <WindowsFramelessWindow.h>
+
+class FWindow : public WindowsFramelessWindow
 {
 public:
     FWindow(QWidget *parent = nullptr);
-
-private:
-    void showHelpDialog();
 };
 
 #endif  // FWINDOW_H

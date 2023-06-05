@@ -27,16 +27,16 @@ CONFIG(debug, release|debug){
 
 
 SOURCES += \
-    AWindow.cpp \
-    DWindow.cpp \
-    FWindow.cpp \
+#    AWindow.cpp \
+#    DWindow.cpp \
+#    FWindow.cpp \
     main.cpp \
     MainWindow.cpp
 
 HEADERS += \
-    AWindow.h \
-    DWindow.h \
-    FWindow.h \
+#    AWindow.h \
+#    DWindow.h \
+#    FWindow.h \
     MainWindow.h
 
 FORMS += \
