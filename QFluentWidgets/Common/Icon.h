@@ -144,6 +144,8 @@ public:
     };
 
     static FluentIcon *create(IconType t);
+	
+	static FluentIcon *create(const QString &file);
 
     FluentIcon(IconType type, Qfw::Theme t = Qfw::AUTO);
     FluentIcon(const QString &file, Qfw::Theme t = Qfw::AUTO);
