@@ -8,40 +8,11 @@
 
 class SmoothScrollBar;
 
-class ScrollIcon : public FluentIconBase
-{
-public:
-    enum Type
-    {
-        UP = 0,
-        DOWN
-    };
-    //    const QString UP = "UP";
-    //    const QString DOWN     = "DOWN";
-
-    ScrollIcon(Type type, Qfw::Theme t = Qfw::DARK);
-
-    // FluentIconBase interface
-public:
-    QString path() override;
-    QIcon icon() override;
-    void setTheme(const Qfw::Theme &theme) override;
-    Type type() const;
-    QString typeName() const;
-
-private:
-    Type m_type;
-    QString m_name;
-    Qfw::Theme m_theme;
-};
-
-typedef QSharedPointer<ScrollIcon> ScrollIconSPtr;
-
 class ScrollButton : public QToolButton
 {
     Q_OBJECT
 public:
-    explicit ScrollButton(ScrollIconSPtr icon, QWidget *parent = nullptr);
+    explicit ScrollButton(FluentIconSPtr icon, QWidget *parent = nullptr);
 
     virtual bool eventFilter(QObject *watched, QEvent *event) override;
 
@@ -51,7 +22,7 @@ protected:
     virtual void paintEvent(QPaintEvent *event) override;
 
 private:
-    ScrollIconSPtr m_icon;
+    FluentIconSPtr m_icon;
 };
 
 class CycleListWidget : public QListWidget
