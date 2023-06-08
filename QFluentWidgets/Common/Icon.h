@@ -6,6 +6,29 @@
 
 QString getIconColor();
 
+class IconEngine : public QIconEngine
+{
+public:
+    IconEngine(const QString &path);
+
+private:
+    QString m_iconPath;
+
+    // QIconEngine interface
+public:
+    void paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state) override;
+    QPixmap pixmap(const QSize &size, QIcon::Mode mode, QIcon::State state) override;
+    QIconEngine *clone() const override;
+};
+
+class Icon : public QIcon
+{
+public:
+    Icon(const QString &iconPath);
+
+    QString m_iconPath;
+};
+
 class MenuIconEngine : public QIconEngine
 {
 public:
@@ -22,16 +45,14 @@ public:
 class FluentIconBase
 {
 public:
-    virtual ~FluentIconBase() { }
     virtual QString path() = 0;
 
     virtual QIcon icon() = 0;
 
     virtual void setTheme(const Qfw::Theme &theme) = 0;
 
-    virtual void render(QPainter *painter, const QRect &rect, const QString &themeColor = QString(),
-                        bool useTheme = true);
-
+    virtual void render(QPainter *painter, const QRect &rect, const QVector<int> &indexes = QVector<int>(),
+                        const QHash<QString, QString> &attributes = QHash<QString, QString>());
 };
 
 class FluentIcon : public FluentIconBase
@@ -39,7 +60,6 @@ class FluentIcon : public FluentIconBase
 public:
     enum IconType
     {
-        /*icon*/
         EMPTY_ICON = -1,
         ADD        = 0,
         CUT,
@@ -120,30 +140,12 @@ public:
         TRANSPARENT,
         MUSIC_FOLDER,
         CHEVRON_RIGHT,
-        BACKGROUND_FILL,
-        /**
-         * @brief spin_box
-         */
-        SPIN_BOX_UP,
-        SPIN_BOX_DOWN,
-        /**
-         * @brief time_picker
-         */
-        TIME_PICKER_UP,
-        TIME_PICKER_DOWN,
-
-        /**
-         * @brief info_bar
-         */
-        INFO_BAR_WARN,
-        INFO_BAR_SUCCESS,
-        INFO_BAR_INFORMATION,
-        INFO_BAR_ERROR,
+        BACKGROUND_FILL
     };
 
     static FluentIcon *create(IconType t);
-
-    static FluentIcon *create(const QString &file);
+	
+	static FluentIcon *create(const QString &file);
 
     FluentIcon(IconType type, Qfw::Theme t = Qfw::AUTO);
     FluentIcon(const QString &file, Qfw::Theme t = Qfw::AUTO);

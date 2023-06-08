@@ -6,7 +6,6 @@
 
 #include <QPainter>
 #include <QHBoxLayout>
-#include <QPainterPath>
 #include <QMouseEvent>
 #include <QDebug>
 
@@ -39,7 +38,9 @@ void LineEditButton::paintEvent(QPaintEvent *event)
     if (QFWIns.isDarkTheme()) {
         m_ficon->render(&painter, rect.toRect());
     } else {
-        m_ficon->render(&painter, rect.toRect(), "#656565");
+        QHash<QString, QString> attributes;
+        attributes.insert("fill", "#656565");
+        m_ficon->render(&painter, rect.toRect(), QVector<int>(), attributes);
     }
 }
 

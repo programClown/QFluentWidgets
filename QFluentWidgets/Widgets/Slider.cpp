@@ -3,7 +3,6 @@
 
 #include <QMouseEvent>
 #include <QPainter>
-#include <QPainterPath>
 #include <QStyleOptionComplex>
 
 Slider::Slider(Qt::Orientation orientation, QWidget *parent) : QSlider(orientation, parent)

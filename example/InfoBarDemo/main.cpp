@@ -43,8 +43,8 @@ private slots:
                 "smoke. The wine is only for a taste. Sleep at 11 p.m. for 8 hours a day. Before I go to bed, I must "
                 "drink a cup of warm milk, then do 20 minutes of soft exercise, get on the bed, and immediately fall "
                 "asleep. Never leave fatigue and stress until the next day. Doctors say I'm normal.";
-        InfoBar *w = new InfoBar(NEWFLICON(FluentIcon::INFO_BAR_INFORMATION), "Title", content, Qt::Vertical, true,
-                                 2000, InfoBarPosition::TOP_RIGHT, this);
+        InfoBar *w = new InfoBar(InfoBarIconSPtr(new InfoBarIcon(InfoBarIcon::INFORMATION)), "Title", content,
+                                 Qt::Vertical, true, 2000, InfoBarPosition::TOP_RIGHT, this);
         w->setAttribute(Qt::WA_DeleteOnClose);
         w->addWidget(new PushButton("Action"));
         w->show();

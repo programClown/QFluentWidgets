@@ -11,7 +11,7 @@ class ButtonDemo : public QWidget
 public:
     ButtonDemo(QWidget *parent = nullptr) : QWidget(parent)
     {
-        ToolButton *toolButton = new ToolButton(NEWFLICON(FluentIcon::SETTING), this);
+        ToolButton *toolButton  = new ToolButton(NEWFLICON(FluentIcon::SETTING), this);
         PushButton *pushButton1 = new PushButton("Standard push button", nullptr, this);
         PushButton *pushButton2 = new PushButton("Standard push button with icon", NEWFLICON(FluentIcon::FOLDER), this);
 

@@ -8,6 +8,42 @@
 #include <QFile>
 #include <QDebug>
 
+static void drawSvgIcon(const QString &file, QPainter *painter, QRect rect)
+{
+    QSvgRenderer svgRender(file);
+    svgRender.render(painter, QRectF(rect));
+}
+
+IconEngine::IconEngine(const QString &path) : QIconEngine(), m_iconPath(path) { }
+
+void IconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode /*mode*/, QIcon::State /*state*/)
+{
+    painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+
+    if (!m_iconPath.toLower().endsWith("svg")) {
+        painter->drawPixmap(rect, QPixmap(m_iconPath));
+    } else {
+        drawSvgIcon(m_iconPath, painter, rect);
+    }
+}
+
+QPixmap IconEngine::pixmap(const QSize &size, QIcon::Mode mode, QIcon::State state)
+{
+    QPixmap pixmap(size);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    paint(&painter, QRect(QPoint(0, 0), size), mode, state);
+
+    return pixmap;
+}
+
+QIconEngine *IconEngine::clone() const
+{
+    return new IconEngine(*this);
+}
+
+Icon::Icon(const QString &iconPath) : QIcon(new IconEngine(iconPath)), m_iconPath(iconPath) { }
+
 MenuIconEngine::MenuIconEngine(const QIcon &icon) : m_icon(icon) { }
 
 void MenuIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode /*mode*/, QIcon::State state)
@@ -29,45 +65,66 @@ QString getIconColor()
     }
 }
 
-void FluentIconBase::render(QPainter *painter, const QRect &rect, const QString &themeColor, bool useTheme)
+static QString writeSvg(const QString &iconPath, const QVector<int> &indexes, const QHash<QString, QString> &attributes)
 {
-    painter->save();
+    if (!iconPath.toLower().endsWith("svg")) {
+        return "";
+    }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    painter->setRenderHint(QPainter::HighQualityAntialiasing);
-#endif
-    painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+    QFile f(iconPath);
+    f.open(QIODevice::ReadOnly | QIODevice::Text);
 
-    QPaintDevice *device = painter->device();
-    QWidget *widget      = static_cast<QWidget *>(device);
-    QString iconPath     = path();
-    QImage img(iconPath);
-    QColor fillColor;
-    bool colorChange = false;
-    if (useTheme) {
-        if (!themeColor.isEmpty()) {
-            colorChange = true;
-            fillColor   = QColor(themeColor);
-        } else if (widget && (iconPath.toLower().endsWith("svg") || iconPath.toLower().endsWith("png"))) {
-            auto palette = widget->palette();
-            fillColor    = palette.color(QPalette::Foreground);
-            colorChange  = true;
-        }
+    QDomDocument dom;
+    dom.setContent(f.readAll());
+    f.close();
 
-        if (colorChange) {
-            QPainter p(&img);
-            p.setCompositionMode(QPainter::CompositionMode_SourceIn);
-            p.fillRect(img.rect(), fillColor);
+    // change the color of each path
+    QDomNodeList pathNodes = dom.elementsByTagName("path");
+
+    QVector<int> _indexes = indexes;
+    if (_indexes.isEmpty()) {
+        for (int i = 0; i < pathNodes.length(); ++i) {
+            _indexes.append(i);
         }
     }
 
-    painter->drawImage(rect, img);
-    painter->restore();
+    for (auto index : _indexes) {
+        QDomElement element = pathNodes.at(index).toElement();
+
+        QHashIterator<QString, QString> iter(attributes);
+        while (iter.hasNext()) {
+            iter.next();
+            element.setAttribute(iter.key(), iter.value());
+        }
+    }
+
+    return dom.toString();
+}
+
+void FluentIconBase::render(QPainter *painter, const QRect &rect, const QVector<int> &indexes,
+                            const QHash<QString, QString> &attributes)
+{
+    QString filePath = path();
+    //    qDebug() << filePath;
+    bool isSvg = filePath.toLower().endsWith("svg");
+    if (isSvg) {
+        if (attributes.isEmpty()) {
+            QSvgRenderer svgRender(filePath);
+            svgRender.render(painter, QRectF(rect));
+        } else {
+            QString svg = writeSvg(filePath, indexes, attributes);
+            QSvgRenderer svgRender(svg.toUtf8());
+            svgRender.render(painter, QRectF(rect));
+        }
+    } else {
+        QPixmap pixmap = icon().pixmap(rect.width(), rect.height());
+        painter->drawPixmap(rect, pixmap);
+    }
 }
 
 FluentIcon *FluentIcon::create(FluentIcon::IconType t)
 {
-    if (t >= ADD && t <= INFO_BAR_ERROR) {
+    if (t >= ADD && t <= BACKGROUND_FILL) {
         return new FluentIcon(t);
     }
 
@@ -93,186 +150,167 @@ QString FluentIcon::iconName(FluentIcon::IconType type)
 {
     switch (type) {
         case EMPTY_ICON:
-            return "icons/Empty";
+            return "Empty";
         case ADD:
-            return "icons/Add";
+            return "Add";
         case CUT:
-            return "icons/Cut";
+            return "Cut";
         case PIN:
-            return "icons/Pin";
+            return "Pin";
         case TAG:
-            return "icons/Tag";
+            return "Tag";
         case CHAT:
-            return "icons/Chat";
+            return "Chat";
         case COPY:
-            return "icons/Copy";
+            return "Copy";
         case CODE:
-            return "icons/Code";
+            return "Code";
         case EDIT:
-            return "icons/Edit";
+            return "Edit";
         case FONT:
-            return "icons/Font";
+            return "Font";
         case HELP:
-            return "icons/Help";
+            return "Help";
         case HIDE:
-            return "icons/Hide";
+            return "Hide";
         case HOME:
-            return "icons/Home";
+            return "Home";
         case INFO:
-            return "icons/Info";
+            return "Info";
         case LINK:
-            return "icons/Link";
+            return "Link";
         case MAIL:
-            return "icons/Mail";
+            return "Mail";
         case MENU:
             return "Menu";
         case MORE:
-            return "icons/More";
+            return "More";
         case SAVE:
-            return "icons/Save";
+            return "Save";
         case SEND:
-            return "icons/Send";
+            return "Send";
         case SYNC:
-            return "icons/Sync";
+            return "Sync";
         case VIEW:
-            return "icons/View";
+            return "View";
         case ZOOM:
-            return "icons/Zoom";
+            return "Zoom";
         case ALBUM:
-            return "icons/Album";
+            return "Album";
         case BRUSH:
-            return "icons/Brush";
+            return "Brush";
         case CLOSE:
-            return "icons/Close";
+            return "Close";
         case EMBED:
-            return "icons/Embed";
+            return "Embed";
         case GLOBE:
-            return "icons/Globe";
+            return "Globe";
         case HEART:
-            return "icons/Heart";
+            return "Heart";
         case MEDIA:
-            return "icons/Media";
+            return "Media";
         case MOVIE:
-            return "icons/Movie";
+            return "Movie";
         case MUSIC:
-            return "icons/Music";
+            return "Music";
         case PASTE:
-            return "icons/Paste";
+            return "Paste";
         case PHOTO:
-            return "icons/Photo";
+            return "Photo";
         case PHONE:
-            return "icons/Phone";
+            return "Phone";
         case PRINT:
-            return "icons/Print";
+            return "Print";
         case SHARE:
-            return "icons/Share";
+            return "Share";
         case UNPIN:
-            return "icons/Unpin";
+            return "Unpin";
         case VIDEO:
-            return "icons/Video";
+            return "Video";
         case ACCEPT:
-            return "icons/Accept";
+            return "Accept";
         case CAMERA:
-            return "icons/Camera";
+            return "Camera";
         case CANCEL:
-            return "icons/Cancel";
+            return "Cancel";
         case DELETE:
-            return "icons/Delete";
+            return "Delete";
         case FOLDER:
-            return "icons/Folder";
+            return "Folder";
         case SCROLL:
-            return "icons/Scroll";
+            return "Scroll";
         case LAYOUT:
-            return "icons/Layout";
+            return "Layout";
         case GITHUB:
-            return "icons/GitHub";
+            return "GitHub";
         case UPDATE:
-            return "icons/Update";
+            return "Update";
         case RETURN:
-            return "icons/Return";
+            return "Return";
         case RINGER:
-            return "icons/Ringer";
+            return "Ringer";
         case SEARCH:
-            return "icons/Search";
+            return "Search";
         case SAVE_AS:
-            return "icons/SaveAs";
+            return "SaveAs";
         case ZOOM_IN:
-            return "icons/ZoomIn";
+            return "ZoomIn";
         case HISTORY:
-            return "icons/History";
+            return "History";
         case SETTING:
-            return "icons/Setting";
+            return "Setting";
         case PALETTE:
-            return "icons/Palette";
+            return "Palette";
         case MESSAGE:
-            return "icons/Message";
+            return "Message";
         case ZOOM_OUT:
-            return "icons/ZoomOut";
+            return "ZoomOut";
         case FEEDBACK:
-            return "icons/Feedback";
+            return "Feedback";
         case MINIMIZE:
-            return "icons/Minimize";
+            return "Minimize";
         case CHECKBOX:
-            return "icons/CheckBox";
+            return "CheckBox";
         case DOCUMENT:
-            return "icons/Document";
+            return "Document";
         case LANGUAGE:
-            return "icons/Language";
+            return "Language";
         case DOWNLOAD:
-            return "icons/Download";
+            return "Download";
         case QUESTION:
-            return "icons/Question";
+            return "Question";
         case DATE_TIME:
-            return "icons/DateTime";
+            return "DateTime";
         case SEND_FILL:
-            return "icons/SendFill";
+            return "SendFill";
         case COMPLETED:
-            return "icons/Completed";
+            return "Completed";
         case CONSTRACT:
-            return "icons/Constract";
+            return "Constract";
         case ALIGNMENT:
-            return "icons/Alignment";
+            return "Alignment";
         case BOOK_SHELF:
-            return "icons/BookShelf";
+            return "BookShelf";
         case HIGHTLIGHT:
-            return "icons/Highlight";
+            return "Highlight";
         case FOLDER_ADD:
-            return "icons/FolderAdd";
+            return "FolderAdd";
         case PENCIL_INK:
-            return "icons/PencilInk";
+            return "PencilInk";
         case ZIP_FOLDER:
-            return "icons/ZipFolder";
+            return "ZipFolder";
         case MICROPHONE:
-            return "icons/Microphone";
+            return "Microphone";
         case ARROW_DOWN:
-            return "icons/ChevronDown";
+            return "ChevronDown";
         case TRANSPARENT:
-            return "icons/Transparent";
+            return "Transparent";
         case MUSIC_FOLDER:
-            return "icons/MusicFolder";
+            return "MusicFolder";
         case CHEVRON_RIGHT:
-            return "icons/ChevronRight";
+            return "ChevronRight";
         case BACKGROUND_FILL:
-            return "icons/BackgroundColor";
-
-        case SPIN_BOX_UP:
-            return "spin_box/Up";
-        case SPIN_BOX_DOWN:
-            return "spin_box/Down";
-
-        case TIME_PICKER_UP:
-            return "time_picker/Up";
-        case TIME_PICKER_DOWN:
-            return "time_picker/Down";
-
-        case INFO_BAR_WARN:
-            return "info_bar/Warning";
-        case INFO_BAR_SUCCESS:
-            return "info_bar/Success";
-        case INFO_BAR_INFORMATION:
-            return "info_bar/Info";
-        case INFO_BAR_ERROR:
-            return "info_bar/Error";
+            return "BackgroundColor";
     }
 
     return "Unkown";
@@ -290,7 +328,7 @@ QString FluentIcon::typeName() const
 
 QString FluentIcon::path()
 {
-    if (isIconType && m_type == EMPTY_ICON) {
+    if (m_type == EMPTY_ICON) {
         return "";
     }
 
@@ -303,18 +341,8 @@ QString FluentIcon::path()
         } else {
             c = "white";
         }
-        if (m_type >= INFO_BAR_WARN && m_type <= INFO_BAR_ERROR) {
-            QString colorName;
-            if (m_theme == Qfw::Theme::AUTO) {
-                colorName = QFWIns.isDarkTheme() ? "dark" : "light";
-            } else {
-                colorName = Qfw::ThemeString(m_theme).toLower();
-            }
 
-            return QString(":/qfluentwidgets/images/%1_%2.svg").arg(iconName(m_type)).arg(colorName);
-        }
-
-        return QString(":/qfluentwidgets/images/%1_%2.svg").arg(iconName(m_type)).arg(c);
+        return QString("../QFluentWidgets/images/icons/%1_%2.svg").arg(iconName(m_type)).arg(c);
     }
 
     return m_file;
@@ -323,11 +351,12 @@ QString FluentIcon::path()
 QIcon FluentIcon::icon()
 {
     if (m_type == EMPTY_ICON) {
-        if (m_file.isEmpty()) {
-            return QIcon();
-        }
-
-        return QIcon(m_file);
+       if (m_file.isEmpty())
+		{
+			return QIcon();
+		}
+        
+		return QIcon(m_file);
     }
     return QIcon(path());
 }

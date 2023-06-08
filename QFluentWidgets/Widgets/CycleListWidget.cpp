@@ -7,7 +7,55 @@
 #include <QPainter>
 #include <QWheelEvent>
 
-ScrollButton::ScrollButton(FluentIconSPtr icon, QWidget *parent) : QToolButton(parent), isPressed(false), m_icon(icon)
+ScrollIcon::ScrollIcon(ScrollIcon::Type type, Qfw::Theme t) : m_type(type), m_theme(t)
+{
+    switch (type) {
+        case UP:
+            m_name = "Up";
+            break;
+        case DOWN:
+            m_name = "Down";
+            break;
+    }
+}
+
+QString ScrollIcon::path()
+{
+    QString colorName;
+    if (m_theme == Qfw::Theme::AUTO) {
+        colorName = QFWIns.isDarkTheme() ? "white" : "black";
+    } else {
+        if (m_theme == Qfw::DARK) {
+            colorName = "white";
+        } else {
+            colorName = "black";
+        }
+    }
+
+    return QString(":/qfluentwidgets/images/time_picker/%1_%2.svg").arg(m_name).arg(colorName);
+}
+
+QIcon ScrollIcon::icon()
+{
+    return QIcon(path());
+}
+
+void ScrollIcon::setTheme(const Qfw::Theme &theme)
+{
+    m_theme = theme;
+}
+
+ScrollIcon::Type ScrollIcon::type() const
+{
+    return m_type;
+}
+
+QString ScrollIcon::typeName() const
+{
+    return m_name;
+}
+
+ScrollButton::ScrollButton(ScrollIconSPtr icon, QWidget *parent) : QToolButton(parent), isPressed(false), m_icon(icon)
 {
     installEventFilter(this);
 }
@@ -53,8 +101,8 @@ CycleListWidget::CycleListWidget(const QVariantList &items, const QSize &itemSiz
                                  QWidget *parent)
     : QListWidget(parent), m_itemSize(itemSize), m_align(align), m_isCycle(false), m_currentIndex(-1)
 {
-    m_upButton       = new ScrollButton(NEWFLICON(FluentIcon::TIME_PICKER_UP), this);
-    m_downButton     = new ScrollButton(NEWFLICON(FluentIcon::TIME_PICKER_DOWN), this);
+    m_upButton       = new ScrollButton(ScrollIconSPtr(new ScrollIcon(ScrollIcon::UP)), this);
+    m_downButton     = new ScrollButton(ScrollIconSPtr(new ScrollIcon(ScrollIcon::DOWN)), this);
     m_scrollDuration = 250;
     m_originItems    = items;
 
