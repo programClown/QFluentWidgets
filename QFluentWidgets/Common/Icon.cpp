@@ -125,7 +125,7 @@ QString FluentIcon::iconName(FluentIcon::IconType type)
         case MAIL:
             return "icons/Mail";
         case MENU:
-            return "Menu";
+            return "icons/Menu";
         case MORE:
             return "icons/More";
         case SAVE:
