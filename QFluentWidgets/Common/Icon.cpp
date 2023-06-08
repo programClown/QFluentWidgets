@@ -132,11 +132,6 @@ FluentIcon *FluentIcon::create(FluentIcon::IconType t)
     return nullptr;
 }
 
-FluentIcon *FluentIcon::create(const QString &file)
-{
-    return new FluentIcon(file);
-}
-
 FluentIcon::FluentIcon(FluentIcon::IconType type, Qfw::Theme t) : m_type(type), m_theme(t), m_file(""), isIconType(true)
 {
 }
@@ -351,12 +346,7 @@ QString FluentIcon::path()
 QIcon FluentIcon::icon()
 {
     if (m_type == EMPTY_ICON) {
-       if (m_file.isEmpty())
-		{
-			return QIcon();
-		}
-        
-		return QIcon(m_file);
+        return QIcon();
     }
     return QIcon(path());
 }
