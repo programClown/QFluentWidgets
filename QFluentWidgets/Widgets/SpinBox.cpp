@@ -3,56 +3,8 @@
 #include "Menu.h"
 
 #include <QPainter>
-
-SpinIcon::SpinIcon(SpinIcon::Type type, Qfw::Theme t) : m_type(type), m_theme(t)
-{
-    switch (type) {
-        case UP:
-            m_name = "Up";
-            break;
-        case DOWN:
-            m_name = "Down";
-            break;
-    }
-}
-
-QString SpinIcon::path()
-{
-    QString colorName;
-    if (m_theme == Qfw::Theme::AUTO) {
-        colorName = QFWIns.isDarkTheme() ? "white" : "black";
-    } else {
-        if (m_theme == Qfw::DARK) {
-            colorName = "white";
-        } else {
-            colorName = "black";
-        }
-    }
-
-    return QString(":/qfluentwidgets/images/spin_box/%1_%2.svg").arg(m_name).arg(colorName);
-}
-
-QIcon SpinIcon::icon()
-{
-    return QIcon(path());
-}
-
-void SpinIcon::setTheme(const Qfw::Theme &theme)
-{
-    m_theme = theme;
-}
-
-SpinIcon::Type SpinIcon::type() const
-{
-    return m_type;
-}
-
-QString SpinIcon::typeName() const
-{
-    return m_name;
-}
-
-SpinButton::SpinButton(SpinIconSPtr icon, QWidget *parent) : QToolButton(parent), m_icon(icon)
+#include <QPainterPath>
+SpinButton::SpinButton(FluentIconSPtr icon, QWidget *parent) : QToolButton(parent), m_icon(icon)
 {
     setFixedSize(31, 23);
     setIconSize(QSize(10, 10));
@@ -76,8 +28,8 @@ void SpinBoxBase::setUpUi()
     m_parent->setFixedHeight(33);
 
     hBoxLayout = new QHBoxLayout(m_parent);
-    upButton   = new SpinButton(SpinIconSPtr(new SpinIcon(SpinIcon::UP)), m_parent);
-    downButton = new SpinButton(SpinIconSPtr(new SpinIcon(SpinIcon::DOWN)), m_parent);
+    upButton   = new SpinButton(NEWFLICON(FluentIcon::SPIN_BOX_UP), m_parent);
+    downButton = new SpinButton(NEWFLICON(FluentIcon::SPIN_BOX_DOWN), m_parent);
 
     hBoxLayout->setContentsMargins(0, 4, 4, 4);
     hBoxLayout->setSpacing(5);

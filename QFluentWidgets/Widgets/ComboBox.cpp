@@ -1,6 +1,7 @@
 ﻿#include "ComboBox.h"
 
 #include <QPainter>
+#include <QPainterPath>
 #include <QDebug>
 
 ComboListModel::ComboListModel(QObject *parent) : QAbstractListModel(parent) { }

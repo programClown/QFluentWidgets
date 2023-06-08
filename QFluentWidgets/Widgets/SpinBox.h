@@ -8,47 +8,18 @@
 #include <QBoxLayout>
 #include <QTimeEdit>
 
-class SpinIcon : public FluentIconBase
-{
-public:
-    enum Type
-    {
-        UP = 0,
-        DOWN
-    };
-    //    const QString UP = "UP";
-    //    const QString DOWN     = "DOWN";
-
-    SpinIcon(Type type, Qfw::Theme t = Qfw::DARK);
-
-    // FluentIconBase interface
-public:
-    QString path() override;
-    QIcon icon() override;
-    void setTheme(const Qfw::Theme &theme) override;
-    Type type() const;
-    QString typeName() const;
-
-private:
-    Type m_type;
-    QString m_name;
-    Qfw::Theme m_theme;
-};
-
-typedef QSharedPointer<SpinIcon> SpinIconSPtr;
-
 class SpinButton : public QToolButton
 {
     Q_OBJECT
 public:
-    explicit SpinButton(SpinIconSPtr icon, QWidget *parent = nullptr);
+    explicit SpinButton(FluentIconSPtr icon, QWidget *parent = nullptr);
 
     // QWidget interface
 protected:
     virtual void paintEvent(QPaintEvent *event) override;
 
 private:
-    SpinIconSPtr m_icon;
+    FluentIconSPtr m_icon;
 };
 
 class SpinBoxBase : public QObject

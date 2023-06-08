@@ -21,39 +21,6 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 };
 
-class InfoBarIcon : public FluentIconBase
-{
-public:
-    enum Type
-    {
-        INFORMATION = 0,
-        SUCCESS,
-        WARNING,
-        ERROR
-    };
-    //    const QString INFORMATION = "Info";
-    //    const QString SUCCESS     = "Success";
-    //    const QString WARNING     = "Warning";
-    //    const QString ERROR       = "Error";
-
-    InfoBarIcon(Type type, Qfw::Theme t = Qfw::AUTO);
-
-    // FluentIconBase interface
-public:
-    QString path() override;
-    QIcon icon() override;
-    void setTheme(const Qfw::Theme &theme) override;
-    Type type() const;
-    QString typeName() const;
-
-private:
-    Type m_type;
-    QString m_name;
-    Qfw::Theme m_theme;
-};
-
-typedef QSharedPointer<InfoBarIcon> InfoBarIconSPtr;
-
 enum InfoBarPosition
 {
     TOP          = 0,
