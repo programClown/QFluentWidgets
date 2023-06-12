@@ -14,14 +14,14 @@ class LineEditButton : public QToolButton
 {
     Q_OBJECT
 public:
-    LineEditButton(QSharedPointer<FluentIconBase> ficon, QWidget *parent = nullptr);
+    LineEditButton(FluentIconBase *ficon, QWidget *parent = nullptr);
 
     // QWidget interface
 protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
-    QSharedPointer<FluentIconBase> m_ficon;
+    QScopedPointer<FluentIconBase> m_ficon;
 };
 
 class LineEdit : public QLineEdit
@@ -64,7 +64,7 @@ signals:
     void searchSignal(const QString &);
     void clearSignal();
 
-private slots:
+protected slots:
     void search();
 
 private:

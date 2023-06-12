@@ -11,7 +11,7 @@ class NavigationInterface : public QWidget
 public:
     explicit NavigationInterface(bool showMenuButton = true, bool showReturnButton = true, QWidget *parent = nullptr);
 
-    void addItem(const QString &routeKey, FluentIconBaseSPtr icon, const QString &text, const QObject *receiver,
+    void addItem(const QString &routeKey, FluentIconBase *icon, const QString &text, const QObject *receiver,
                  const char *onClick, bool selectable = true,
                  NavigationItemPosition position = NavigationItemPosition::TOP);
 

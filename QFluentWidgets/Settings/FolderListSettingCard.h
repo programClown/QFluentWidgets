@@ -14,7 +14,7 @@ class FToolButton : public QToolButton
 {
     Q_OBJECT
 public:
-    explicit FToolButton(FluentIconBaseSPtr icon, const QSize &size, const QSize &iconSize, QWidget *parent = nullptr);
+    explicit FToolButton(FluentIconBase *icon, const QSize &size, const QSize &iconSize, QWidget *parent = nullptr);
 
     // QWidget interface
 protected:
@@ -24,7 +24,7 @@ protected:
 
 private:
     bool m_isPressed;
-    FluentIconBaseSPtr m_icon;
+    QScopedPointer<FluentIconBase> m_icon;
     QSize m_iconSize;
 };
 
@@ -32,7 +32,7 @@ class FPushButton : public QPushButton
 {
     Q_OBJECT
 public:
-    explicit FPushButton(FluentIconBaseSPtr icon, const QString &text, QWidget *parent = nullptr);
+    explicit FPushButton(FluentIconBase *icon, const QString &text, QWidget *parent = nullptr);
 
     // QWidget interface
 protected:
@@ -42,7 +42,7 @@ protected:
 
 private:
     bool m_isPressed;
-    FluentIconBaseSPtr m_icon;
+    QScopedPointer<FluentIconBase> m_icon;
 };
 
 class FolderItem : public QWidget

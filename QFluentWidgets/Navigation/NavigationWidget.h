@@ -36,7 +36,7 @@ class NavigationPushButton : public NavigationWidget
 {
     Q_OBJECT
 public:
-    explicit NavigationPushButton(FluentIconBaseSPtr ficon, const QString &text, bool selectable,
+    explicit NavigationPushButton(FluentIconBase *ficon, const QString &text, bool selectable,
                                   QWidget *parent = nullptr);
 
     QString text() const;
@@ -46,7 +46,7 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
-    FluentIconBaseSPtr m_ficon;
+    QScopedPointer<FluentIconBase> m_ficon;
     QString m_text;
 };
 
@@ -54,7 +54,7 @@ class NavigationToolButton : public NavigationPushButton
 {
     Q_OBJECT
 public:
-    explicit NavigationToolButton(FluentIconBaseSPtr ficon, QWidget *parent = nullptr);
+    explicit NavigationToolButton(FluentIconBase *ficon, QWidget *parent = nullptr);
 
     void setCompacted(bool compacted);
 };

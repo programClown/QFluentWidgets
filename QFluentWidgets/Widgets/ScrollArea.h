@@ -58,6 +58,8 @@ public:
 
     void setScrollAnimation(Qt::Orientation orient, int duration, QEasingCurve easing = QEasingCurve::OutCubic);
 
+    void setViewportMargins(int left, int top, int right, int bottom);
+
 private:
     SmoothScrollBar *m_hScrollBar;
     SmoothScrollBar *m_vScrollBar;

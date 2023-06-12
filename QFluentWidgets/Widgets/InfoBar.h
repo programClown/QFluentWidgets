@@ -19,12 +19,15 @@ public:
     // QWidget interface
 protected:
     void paintEvent(QPaintEvent *event) override;
+
+private:
+    QScopedPointer<FluentIcon> m_ficon;
 };
 
 class InfoBarIcon : public FluentIconBase
 {
 public:
-    enum Type
+    enum IconType
     {
         INFORMATION = 0,
         SUCCESS,
@@ -35,24 +38,24 @@ public:
     //    const QString SUCCESS     = "Success";
     //    const QString WARNING     = "Warning";
     //    const QString ERROR       = "Error";
+    static QString iconName(IconType type);
 
-    InfoBarIcon(Type type, Qfw::Theme t = Qfw::AUTO);
+    InfoBarIcon(IconType type, Qfw::Theme t = Qfw::AUTO);
+    ~InfoBarIcon();
+
+    QString iconPath();
 
     // FluentIconBase interface
-public:
-    QString path() override;
     QIcon icon() override;
+    QString typeName() const override;
+    FluentIconBase *clone() override;
+    Qfw::Theme theme() const;
     void setTheme(const Qfw::Theme &theme) override;
-    Type type() const;
-    QString typeName() const;
 
 private:
-    Type m_type;
-    QString m_name;
     Qfw::Theme m_theme;
+    IconType m_type;
 };
-
-typedef QSharedPointer<InfoBarIcon> InfoBarIconSPtr;
 
 enum InfoBarPosition
 {
@@ -69,21 +72,21 @@ class InfoIconWidget : public QWidget
 {
     Q_OBJECT
 public:
-    InfoIconWidget(FluentIconBaseSPtr icon, QWidget *parent = nullptr);
+    InfoIconWidget(FluentIconBase *icon, QWidget *parent = nullptr);
 
     // QWidget interface
 protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
-    FluentIconBaseSPtr m_icon;
+    QScopedPointer<FluentIconBase> m_icon;
 };
 
 class InfoBar : public QFrame
 {
     Q_OBJECT
 public:
-    explicit InfoBar(FluentIconBaseSPtr ficon, const QString &title, const QString &content,
+    explicit InfoBar(FluentIconBase *ficon, const QString &title, const QString &content,
                      Qt::Orientation orient = Qt::Horizontal, bool isClosable = true, int duration = 1000,
                      InfoBarPosition position = InfoBarPosition::TOP_RIGHT, QWidget *parent = nullptr);
 
@@ -91,7 +94,7 @@ public:
     void addWidget(QWidget *widget, int stretch = 0);
     void setCustomBackgroundColor(const QColor &light, const QColor &dark);
 
-    static InfoBar *creator(FluentIconBaseSPtr ficon, const QString &title, const QString &content,
+    static InfoBar *creator(FluentIconBase *ficon, const QString &title, const QString &content,
                             Qt::Orientation orient = Qt::Horizontal, bool isClosable = true, int duration = 1000,
                             InfoBarPosition position = InfoBarPosition::TOP_RIGHT, QWidget *parent = nullptr);
 
@@ -134,7 +137,8 @@ private:
     QString m_title;
     QString m_content;
     Qt::Orientation m_orient;
-    FluentIconBaseSPtr m_ficon;
+    QSharedPointer<FluentIconBase> m_ficon;
+    //    FluentIconBase *m_ficon;
     int m_duration;
     bool m_isClosable;
     InfoBarPosition m_position;

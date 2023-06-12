@@ -28,6 +28,7 @@ int main(int argc, char *argv[])
         qputenv("QT_WIDGETS_RHI", FRAMELESSHELPER_BYTEARRAY_LITERAL("1"));
     }
 #endif
+    Q_INIT_RESOURCE(qfluentwidgets);
 
     const auto application = std::make_unique<QApplication>(argc, argv);
 

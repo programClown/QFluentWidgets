@@ -68,8 +68,7 @@ void NavigationWidget::leaveEvent(QEvent * /*event*/)
     update();
 }
 
-NavigationPushButton::NavigationPushButton(FluentIconBaseSPtr ficon, const QString &text, bool selectable,
-                                           QWidget *parent)
+NavigationPushButton::NavigationPushButton(FluentIconBase *ficon, const QString &text, bool selectable, QWidget *parent)
     : NavigationWidget(selectable, parent), m_ficon(ficon), m_text(text)
 {
     setStyleSheet("NavigationPushButton{font: 14px \"Segoe UI\", \"Microsoft YaHei\"}");
@@ -119,7 +118,7 @@ void NavigationPushButton::paintEvent(QPaintEvent * /*event*/)
     }
 }
 
-NavigationToolButton::NavigationToolButton(FluentIconBaseSPtr ficon, QWidget *parent)
+NavigationToolButton::NavigationToolButton(FluentIconBase *ficon, QWidget *parent)
     : NavigationPushButton(ficon, "", false, parent)
 {
 }

@@ -601,7 +601,7 @@ void RoundMenu::exec(const QPoint &pos, bool ani)
         move(showPos);
     }
 
-    this->setWindowModality(Qt::ApplicationModal);  //设置为模态状态
+    this->setWindowModality(Qt::ApplicationModal);  // 设置为模态状态
 
     show();
 
@@ -649,8 +649,8 @@ void SubMenuItemWidget::paintEvent(QPaintEvent * /*event*/)
 
     // draw right arrow
     // NOTE: 未完成
-    FluentIcon ficon(FluentIcon::CHEVRON_RIGHT);
-    ficon.render(&painter, QRect(width() - 10, height() / 2 - 9 / 2, 9, 9));
+    QScopedPointer<FluentIcon> ficon(NEWFLICON(FluentIcon, CHEVRON_RIGHT));
+    ficon->render(&painter, QRect(width() - 10, height() / 2 - 9 / 2, 9, 9));
 }
 
 RoundMenu *SubMenuItemWidget::roundMenu() const

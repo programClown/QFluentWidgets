@@ -9,8 +9,7 @@
 
 #include <QPainter>
 
-SettingCard::SettingCard(QSharedPointer<FluentIconBase> ficon, const QString &title, const QString &content,
-                         QWidget *parent)
+SettingCard::SettingCard(FluentIconBase *ficon, const QString &title, const QString &content, QWidget *parent)
     : QFrame(parent), m_ficon(ficon)
 {
 
@@ -58,14 +57,14 @@ void SettingCard::setContent(const QString &content)
     m_contentLabel->setVisible(!content.isEmpty());
 }
 
-QSharedPointer<FluentIconBase> SettingCard::ficon() const
+FluentIconBase *SettingCard::ficon() const
 {
-    return m_ficon;
+    return m_ficon.data();
 }
 
 void SettingCard::setValue(const QVariant &) { }
 
-SwitchSettingCard::SwitchSettingCard(QSharedPointer<FluentIconBase> ficon, const QString &title, const QString &content,
+SwitchSettingCard::SwitchSettingCard(FluentIconBase *ficon, const QString &title, const QString &content,
                                      Qfw::ConfigItem *configItem, QWidget *parent)
     : SettingCard(ficon, title, content, parent), m_configItem(configItem)
 {
@@ -108,8 +107,8 @@ void SwitchSettingCard::onCheckedChanged(bool isChecked)
     emit checkedChanged(isChecked);
 }
 
-RangeSettingCard::RangeSettingCard(int min, int max, int value, QSharedPointer<FluentIconBase> ficon,
-                                   const QString &title, const QString &content, QWidget *parent)
+RangeSettingCard::RangeSettingCard(int min, int max, int value, FluentIconBase *ficon, const QString &title,
+                                   const QString &content, QWidget *parent)
     : SettingCard(ficon, title, content, parent), m_min(min), m_max(max)
 {
     m_slider     = new Slider(Qt::Horizontal, this);
@@ -152,7 +151,7 @@ void RangeSettingCard::onValueChanged(int value)
     emit valueChanged(value);
 }
 
-PushSettingCard::PushSettingCard(const QString &text, QSharedPointer<FluentIconBase> ficon, const QString &title,
+PushSettingCard::PushSettingCard(const QString &text, FluentIconBase *ficon, const QString &title,
                                  const QString &content, QWidget *parent)
     : SettingCard(ficon, title, content, parent)
 {
@@ -162,15 +161,15 @@ PushSettingCard::PushSettingCard(const QString &text, QSharedPointer<FluentIconB
     connect(button, &QPushButton::clicked, this, &PushSettingCard::clicked);
 }
 
-PrimaryPushSettingCard::PrimaryPushSettingCard(const QString &text, QSharedPointer<FluentIconBase> ficon,
-                                               const QString &title, const QString &content, QWidget *parent)
+PrimaryPushSettingCard::PrimaryPushSettingCard(const QString &text, FluentIconBase *ficon, const QString &title,
+                                               const QString &content, QWidget *parent)
     : PushSettingCard(text, ficon, title, content, parent)
 {
     button->setObjectName("primaryButton");
 }
 
-HyperlinkCard::HyperlinkCard(const QString &url, const QString &text, QSharedPointer<FluentIconBase> ficon,
-                             const QString &title, const QString &content, QWidget *parent)
+HyperlinkCard::HyperlinkCard(const QString &url, const QString &text, FluentIconBase *ficon, const QString &title,
+                             const QString &content, QWidget *parent)
     : SettingCard(ficon, title, content, parent)
 {
     linkButton = new HyperlinkButton(url, text, this);
@@ -221,7 +220,7 @@ void ColorPickerButton::paintEvent(QPaintEvent * /*event*/)
     painter.drawRoundedRect(rect().adjusted(1, 1, -1, -1), 5, 5);
 }
 
-ColorSettingCard::ColorSettingCard(const QColor &color, QSharedPointer<FluentIconBase> ficon, const QString &title,
+ColorSettingCard::ColorSettingCard(const QColor &color, FluentIconBase *ficon, const QString &title,
                                    const QString &content, QWidget *parent)
     : SettingCard(ficon, title, content, parent), m_color(color)
 {
@@ -244,8 +243,8 @@ void ColorSettingCard::onColorChanged(const QColor &color)
 }
 
 ComboBoxSettingCard::ComboBoxSettingCard(const QString &defaultText, const QHash<QString, QVariant> &option,
-                                         QSharedPointer<FluentIconBase> ficon, const QString &title,
-                                         const QString &content, QWidget *parent)
+                                         FluentIconBase *ficon, const QString &title, const QString &content,
+                                         QWidget *parent)
     : SettingCard(ficon, title, content, parent), m_options(option)
 {
 

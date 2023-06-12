@@ -5,8 +5,8 @@
 
 #include <QButtonGroup>
 
-CustomColorSettingCard::CustomColorSettingCard(const QVariant &configItem, FluentIconBaseSPtr icon,
-                                               const QString &title, const QString &content, QWidget *parent)
+CustomColorSettingCard::CustomColorSettingCard(const QVariant &configItem, FluentIconBase *icon, const QString &title,
+                                               const QString &content, QWidget *parent)
     : ExpandGroupSettingCard(icon, title, content, parent)
 {
     // TODO: 这里是配置项，未完成

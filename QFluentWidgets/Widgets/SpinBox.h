@@ -1,4 +1,4 @@
-#ifndef SPINBOX_H
+﻿#ifndef SPINBOX_H
 #define SPINBOX_H
 
 #include "Common/Icon.h"
@@ -11,44 +11,44 @@
 class SpinIcon : public FluentIconBase
 {
 public:
-    enum Type
+    enum IconType
     {
         UP = 0,
         DOWN
     };
     //    const QString UP = "UP";
     //    const QString DOWN     = "DOWN";
+    static QString iconName(IconType type);
 
-    SpinIcon(Type type, Qfw::Theme t = Qfw::DARK);
+    SpinIcon(IconType type, Qfw::Theme t = Qfw::DARK);
+    ~SpinIcon();
+
+    QString iconPath();
 
     // FluentIconBase interface
-public:
-    QString path() override;
     QIcon icon() override;
+    QString typeName() const override;
+    FluentIconBase *clone() override;
+    Qfw::Theme theme() const;
     void setTheme(const Qfw::Theme &theme) override;
-    Type type() const;
-    QString typeName() const;
 
 private:
-    Type m_type;
-    QString m_name;
     Qfw::Theme m_theme;
+    IconType m_type;
 };
-
-typedef QSharedPointer<SpinIcon> SpinIconSPtr;
 
 class SpinButton : public QToolButton
 {
     Q_OBJECT
 public:
-    explicit SpinButton(SpinIconSPtr icon, QWidget *parent = nullptr);
+    explicit SpinButton(FluentIconBase *icon, QWidget *parent = nullptr);
 
     // QWidget interface
 protected:
     virtual void paintEvent(QPaintEvent *event) override;
 
 private:
-    SpinIconSPtr m_icon;
+    QScopedPointer<FluentIconBase> m_icon;
 };
 
 class SpinBoxBase : public QObject

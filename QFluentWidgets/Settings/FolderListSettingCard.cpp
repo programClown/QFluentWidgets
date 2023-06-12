@@ -5,7 +5,7 @@
 #include <QFileDialog>
 #include <QPainter>
 
-FToolButton::FToolButton(FluentIconBaseSPtr icon, const QSize &size, const QSize &iconSize, QWidget *parent)
+FToolButton::FToolButton(FluentIconBase *icon, const QSize &size, const QSize &iconSize, QWidget *parent)
     : QToolButton(parent), m_isPressed(false), m_icon(icon), m_iconSize(iconSize)
 {
     setFixedSize(size);
@@ -38,7 +38,7 @@ void FToolButton::paintEvent(QPaintEvent *event)
     m_icon->render(&painter, QRectF((this->width() - w) / 2, (this->height() - h) / 2, w, h).toRect());
 }
 
-FPushButton::FPushButton(FluentIconBaseSPtr icon, const QString &text, QWidget *parent)
+FPushButton::FPushButton(FluentIconBase *icon, const QString &text, QWidget *parent)
     : QPushButton(parent), m_isPressed(false), m_icon(icon)
 {
     setText(text);
@@ -74,7 +74,7 @@ FolderItem::FolderItem(const QString &folder, QWidget *parent) : QWidget(parent)
 
     hBoxLayout     = new QHBoxLayout(this);
     m_folderLabel  = new QLabel(folder, this);
-    m_removeButton = new FToolButton(NEWFLICON(FluentIcon::CLOSE), QSize(39, 29), QSize(12, 12), this);
+    m_removeButton = new FToolButton(NEWFLICON(FluentIcon, CLOSE), QSize(39, 29), QSize(12, 12), this);
 
     setFixedHeight(53);
     hBoxLayout->setContentsMargins(48, 0, 60, 0);
@@ -94,11 +94,11 @@ QString FolderItem::folder() const
 
 FolderListSettingCard::FolderListSettingCard(const QVariant &configItem, const QString &title, const QString &content,
                                              const QString &directory, QWidget *parent)
-    : ExpandSettingCard(NEWFLICON(FluentIcon::FOLDER_ADD), title, content, parent),
+    : ExpandSettingCard(NEWFLICON(FluentIcon, FOLDER_ADD), title, content, parent),
       m_configItem(configItem),
       m_dialogDirectory(directory)
 {
-    m_addFolderButton = new FPushButton(NEWFLICON(FluentIcon::FOLDER_ADD), tr("Add folder"), this);
+    m_addFolderButton = new FPushButton(NEWFLICON(FluentIcon, FOLDER_ADD), tr("Add folder"), this);
     m_folders         = m_configItem.toStringList();
     initWidget();
 }

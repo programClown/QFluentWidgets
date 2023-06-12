@@ -11,22 +11,20 @@ class IconEngine : public QIconEngine
 public:
     IconEngine(const QString &path);
 
-private:
-    QString m_iconPath;
+    void setIndexes(const QVector<int> &indexes);
+    void setAttributes(const QHash<QString, QString> &attributes);
+    void setIconPath(const QString &iconPath);
+    QString iconPath() const;
 
-    // QIconEngine interface
-public:
     void paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state) override;
     QPixmap pixmap(const QSize &size, QIcon::Mode mode, QIcon::State state) override;
     QIconEngine *clone() const override;
-};
 
-class Icon : public QIcon
-{
-public:
-    Icon(const QString &iconPath);
-
+private:
     QString m_iconPath;
+    QVector<int> m_indexes;
+    QHash<QString, QString> m_attributes;
+    bool m_isSvg;
 };
 
 class MenuIconEngine : public QIconEngine
@@ -45,14 +43,19 @@ public:
 class FluentIconBase
 {
 public:
-    virtual QString path() = 0;
+    explicit FluentIconBase(const QString &path);
+    virtual ~FluentIconBase();
 
-    virtual QIcon icon() = 0;
+    virtual QIcon icon()             = 0;
+    virtual QString typeName() const = 0;
+    virtual FluentIconBase *clone()  = 0;
 
     virtual void setTheme(const Qfw::Theme &theme) = 0;
 
     virtual void render(QPainter *painter, const QRect &rect, const QVector<int> &indexes = QVector<int>(),
                         const QHash<QString, QString> &attributes = QHash<QString, QString>());
+
+    QScopedPointer<IconEngine> iconEngine;
 };
 
 class FluentIcon : public FluentIconBase
@@ -60,8 +63,8 @@ class FluentIcon : public FluentIconBase
 public:
     enum IconType
     {
-        EMPTY_ICON = -1,
-        ADD        = 0,
+        UNKNOWN = -1,
+        ADD     = 0,
         CUT,
         PIN,
         TAG,
@@ -143,35 +146,27 @@ public:
         BACKGROUND_FILL
     };
 
-    static FluentIcon *create(IconType t);
-	
-	static FluentIcon *create(const QString &file);
-
-    FluentIcon(IconType type, Qfw::Theme t = Qfw::AUTO);
-    FluentIcon(const QString &file, Qfw::Theme t = Qfw::AUTO);
-
     static QString iconName(IconType type);
-    IconType type() const;
-    QString typeName() const;
+
+    FluentIcon(const QString &customPath);
+    FluentIcon(IconType type, Qfw::Theme t = Qfw::Theme::AUTO);
+    ~FluentIcon();
+
+    QString iconPath();
 
     // FluentIconBase interface
-    QString path() override;
     QIcon icon() override;
+    QString typeName() const override;
+    FluentIconBase *clone() override;
 
-    // FluentIconBase interface
     Qfw::Theme theme() const;
     void setTheme(const Qfw::Theme &theme) override;
 
 private:
-    IconType m_type;
     Qfw::Theme m_theme;
-    QString m_file;
-    bool isIconType;
+    IconType m_type;
 };
 
-typedef QSharedPointer<FluentIconBase> FluentIconBaseSPtr;
-typedef QSharedPointer<FluentIcon> FluentIconSPtr;
-
-#define NEWFLICON(icon) QSharedPointer<FluentIcon>(FluentIcon::create(icon))
+#define NEWFLICON(cls, type) (new cls(cls::type))
 
 #endif  // ICON_H

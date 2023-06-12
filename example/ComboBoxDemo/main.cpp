@@ -35,7 +35,7 @@ public:
 
         QComboBox *pComboBox = new QComboBox(this);
         pComboBox->addItems({ "刘英", "赵玉田", "刘能", "尼古拉斯赵四" });
-        pComboBox->setView(new QListView());  //添加这句，设置下拉列表项高才能生效
+        pComboBox->setView(new QListView());  // 添加这句，设置下拉列表项高才能生效
         pComboBox->setStyleSheet(qss());
 
         vlay->addWidget(m_comboListBox);
@@ -50,8 +50,8 @@ public:
         m_tableModel   = new ComboTableModel();
         m_listDelegate = new ComboListDelegate(this);
         setModelData();
-        m_comboListBox->setModel(m_listModel);            //设置模型
-        m_comboListBox->setItemDelegate(m_listDelegate);  //设置委托
+        m_comboListBox->setModel(m_listModel);            // 设置模型
+        m_comboListBox->setItemDelegate(m_listDelegate);  // 设置委托
 
         QTableView *view = new QTableView(m_comboTableBox);
         view->setMinimumHeight(200);
@@ -59,7 +59,7 @@ public:
         view->verticalHeader()->setVisible(false);
         view->setAlternatingRowColors(true);
 
-        m_comboTableBox->setModelColumn(2);  //没有这一行不能多列
+        m_comboTableBox->setModelColumn(2);  // 没有这一行不能多列
         m_comboTableBox->setModel(m_tableModel);
         m_comboTableBox->setView(view);
     }

@@ -1,22 +1,29 @@
-#include "SpinBox.h"
+﻿#include "SpinBox.h"
 #include "QFluentWidgets.h"
 #include "Menu.h"
 
 #include <QPainter>
 
-SpinIcon::SpinIcon(SpinIcon::Type type, Qfw::Theme t) : m_type(type), m_theme(t)
+QString SpinIcon::iconName(SpinIcon::IconType type)
 {
     switch (type) {
         case UP:
-            m_name = "Up";
-            break;
+            return "Up";
         case DOWN:
-            m_name = "Down";
-            break;
+            return "Down";
     }
+
+    return "Unknown";
 }
 
-QString SpinIcon::path()
+SpinIcon::SpinIcon(IconType type, Qfw::Theme t) : FluentIconBase(""), m_theme(t), m_type(type)
+{
+    iconEngine->setIconPath(iconPath());
+}
+
+SpinIcon::~SpinIcon() { }
+
+QString SpinIcon::iconPath()
 {
     QString colorName;
     if (m_theme == Qfw::Theme::AUTO) {
@@ -29,30 +36,36 @@ QString SpinIcon::path()
         }
     }
 
-    return QString(":/qfluentwidgets/images/spin_box/%1_%2.svg").arg(m_name).arg(colorName);
+    return QString(":/qfluentwidgets/images/spin_box/%1_%2.svg").arg(iconName(m_type)).arg(colorName);
 }
 
 QIcon SpinIcon::icon()
 {
-    return QIcon(path());
+    return QIcon(iconEngine->clone());
+}
+
+QString SpinIcon::typeName() const
+{
+    return iconName(m_type);
+}
+
+FluentIconBase *SpinIcon::clone()
+{
+    return new SpinIcon(m_type, m_theme);
+}
+
+Qfw::Theme SpinIcon::theme() const
+{
+    return m_theme;
 }
 
 void SpinIcon::setTheme(const Qfw::Theme &theme)
 {
     m_theme = theme;
+    iconEngine->setIconPath(iconPath());
 }
 
-SpinIcon::Type SpinIcon::type() const
-{
-    return m_type;
-}
-
-QString SpinIcon::typeName() const
-{
-    return m_name;
-}
-
-SpinButton::SpinButton(SpinIconSPtr icon, QWidget *parent) : QToolButton(parent), m_icon(icon)
+SpinButton::SpinButton(FluentIconBase *icon, QWidget *parent) : QToolButton(parent), m_icon(icon)
 {
     setFixedSize(31, 23);
     setIconSize(QSize(10, 10));
@@ -76,8 +89,8 @@ void SpinBoxBase::setUpUi()
     m_parent->setFixedHeight(33);
 
     hBoxLayout = new QHBoxLayout(m_parent);
-    upButton   = new SpinButton(SpinIconSPtr(new SpinIcon(SpinIcon::UP)), m_parent);
-    downButton = new SpinButton(SpinIconSPtr(new SpinIcon(SpinIcon::DOWN)), m_parent);
+    upButton   = new SpinButton(NEWFLICON(SpinIcon, UP), m_parent);
+    downButton = new SpinButton(NEWFLICON(SpinIcon, DOWN), m_parent);
 
     hBoxLayout->setContentsMargins(0, 4, 4, 4);
     hBoxLayout->setSpacing(5);

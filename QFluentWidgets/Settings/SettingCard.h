@@ -18,19 +18,18 @@ class SettingCard : public QFrame
 {
     Q_OBJECT
 public:
-    SettingCard(QSharedPointer<FluentIconBase> ficon, const QString &title, const QString &content = "",
-                QWidget *parent = nullptr);
+    SettingCard(FluentIconBase *ficon, const QString &title, const QString &content = "", QWidget *parent = nullptr);
 
     void setTitle(const QString &title);
     void setContent(const QString &content);
-    QSharedPointer<FluentIconBase> ficon() const;
+    FluentIconBase *ficon() const;
     virtual void setValue(const QVariant &value);
 
     QHBoxLayout *hBoxLayout;
     QVBoxLayout *vBoxLayout;
 
 private:
-    QSharedPointer<FluentIconBase> m_ficon;
+    QScopedPointer<FluentIconBase> m_ficon;
     IconWidget *m_iconLabel;
     QLabel *m_titleLabel;
     QLabel *m_contentLabel;
@@ -41,7 +40,7 @@ class SwitchSettingCard : public SettingCard
 {
     Q_OBJECT
 public:
-    SwitchSettingCard(QSharedPointer<FluentIconBase> ficon, const QString &title, const QString &content = "",
+    SwitchSettingCard(FluentIconBase *ficon, const QString &title, const QString &content = "",
                       Qfw::ConfigItem *configItem = nullptr, QWidget *parent = nullptr);
 
     void setValue(const QVariant &value) override;
@@ -62,7 +61,7 @@ class RangeSettingCard : public SettingCard
 {
     Q_OBJECT
 public:
-    RangeSettingCard(int min, int max, int value, QSharedPointer<FluentIconBase> ficon, const QString &title,
+    RangeSettingCard(int min, int max, int value, FluentIconBase *ficon, const QString &title,
                      const QString &content = "", QWidget *parent = nullptr);
 
     void setValue(const QVariant &value) override;
@@ -84,8 +83,8 @@ class PushSettingCard : public SettingCard
 {
     Q_OBJECT
 public:
-    PushSettingCard(const QString &text, QSharedPointer<FluentIconBase> ficon, const QString &title,
-                    const QString &content = "", QWidget *parent = nullptr);
+    PushSettingCard(const QString &text, FluentIconBase *ficon, const QString &title, const QString &content = "",
+                    QWidget *parent = nullptr);
 
     QPushButton *button;
 
@@ -97,7 +96,7 @@ class PrimaryPushSettingCard : public PushSettingCard
 {
     Q_OBJECT
 public:
-    PrimaryPushSettingCard(const QString &text, QSharedPointer<FluentIconBase> ficon, const QString &title,
+    PrimaryPushSettingCard(const QString &text, FluentIconBase *ficon, const QString &title,
                            const QString &content = "", QWidget *parent = nullptr);
 };
 
@@ -105,7 +104,7 @@ class HyperlinkCard : public SettingCard
 {
     Q_OBJECT
 public:
-    HyperlinkCard(const QString &url, const QString &text, QSharedPointer<FluentIconBase> ficon, const QString &title,
+    HyperlinkCard(const QString &url, const QString &text, FluentIconBase *ficon, const QString &title,
                   const QString &content = "", QWidget *parent = nullptr);
 
     HyperlinkButton *linkButton;
@@ -139,7 +138,7 @@ class ColorSettingCard : public SettingCard
 {
     Q_OBJECT
 public:
-    explicit ColorSettingCard(const QColor &color, QSharedPointer<FluentIconBase> ficon, const QString &title,
+    explicit ColorSettingCard(const QColor &color, FluentIconBase *ficon, const QString &title,
                               const QString &content = "", QWidget *parent = nullptr);
 
     void setValue(const QVariant &value) override;
@@ -160,8 +159,8 @@ class ComboBoxSettingCard : public SettingCard
     Q_OBJECT
 public:
     explicit ComboBoxSettingCard(const QString &defaultText, const QHash<QString, QVariant> &option,
-                                 QSharedPointer<FluentIconBase> ficon, const QString &title,
-                                 const QString &content = "", QWidget *parent = nullptr);
+                                 FluentIconBase *ficon, const QString &title, const QString &content = "",
+                                 QWidget *parent = nullptr);
 
     void setValue(const QVariant &value) override;
 

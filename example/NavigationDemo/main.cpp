@@ -123,23 +123,23 @@ private:
 
     void initNavigation()
     {
-        navigationInterface->addItem(searchInterface->objectName(), NEWFLICON(FluentIcon::SEARCH), "Search", this,
+        navigationInterface->addItem(searchInterface->objectName(), NEWFLICON(FluentIcon, SEARCH), "Search", this,
                                      SLOT(searchInterfaceClick()));
-        navigationInterface->addItem(musicInterface->objectName(), NEWFLICON(FluentIcon::MUSIC), "Music library", this,
+        navigationInterface->addItem(musicInterface->objectName(), NEWFLICON(FluentIcon, MUSIC), "Music library", this,
                                      SLOT(musicInterfaceClick()));
-        navigationInterface->addItem(videoInterface->objectName(), NEWFLICON(FluentIcon::VIDEO), "Video library", this,
+        navigationInterface->addItem(videoInterface->objectName(), NEWFLICON(FluentIcon, VIDEO), "Video library", this,
                                      SLOT(videoInterfaceClick()));
 
         navigationInterface->addSeparator();
         // add navigation items to scroll area
-        navigationInterface->addItem(folderInterface->objectName(), NEWFLICON(FluentIcon::FOLDER), "Folder library",
+        navigationInterface->addItem(folderInterface->objectName(), NEWFLICON(FluentIcon, FOLDER), "Folder library",
                                      this, SLOT(folderInterfaceClick()), true, NavigationItemPosition::SCROLL);
 
         for (int i = 1; i <= 20; i++) {
 
             QString name = QString("Folder %1").arg(i);
 
-            navigationInterface->addItem(name, NEWFLICON(FluentIcon::FOLDER), name, this, SLOT(folderInterfaceClick()),
+            navigationInterface->addItem(name, NEWFLICON(FluentIcon, FOLDER), name, this, SLOT(folderInterfaceClick()),
                                          true, NavigationItemPosition::SCROLL);
         }
 
@@ -147,7 +147,7 @@ private:
         navigationInterface->addWidget("avatar", new AvatarWidget(this), this, SLOT(showMessageBox()),
                                        NavigationItemPosition::BOTTOM);
 
-        navigationInterface->addItem(settingInterface->objectName(), NEWFLICON(FluentIcon::SETTING), "Settings", this,
+        navigationInterface->addItem(settingInterface->objectName(), NEWFLICON(FluentIcon, SETTING), "Settings", this,
                                      SLOT(settingInterfaceClick()), true, NavigationItemPosition::BOTTOM);
 
         // IMPORTANT: don't forget to set the default route key if you enable the return button

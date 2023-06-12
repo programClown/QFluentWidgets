@@ -3,8 +3,10 @@
 
 #include <Common/Config.h>
 
-namespace Gallery
+class GalleryConfig : public Qfw::QConfig
 {
+    Q_OBJECT
+public:
     enum Language
     {
         CHINESE_SIMPLIFIED,
@@ -26,15 +28,19 @@ namespace Gallery
                 return "Auto";
         }
     }
-}  // namespace Gallery
 
-class GalleryConfig : public Qfw::QConfig
-{
-    Q_OBJECT
-public:
-    GalleryConfig();
+    static GalleryConfig *cfg();
 
 private:
 };
+
+const int YEAR             = 2023;
+const QString AUTHOR       = "zhiyiYo";
+const QString VERSION      = "v0.7.0";
+const QString HELP_URL     = "https://pyqt-fluent-widgets.readthedocs.io";
+const QString REPO_URL     = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets";
+const QString EXAMPLE_URL  = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets/tree/master/examples";
+const QString FEEDBACK_URL = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets/issues";
+const QString RELEASE_URL  = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets/releases/latest";
 
 #endif  // GALLERYCONFIG_H

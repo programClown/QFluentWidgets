@@ -6,7 +6,7 @@
 
 OptionsSettingCard::OptionsSettingCard(const QVariant &configItem, const QString &title, const QString &content,
                                        const QStringList &texts, QWidget *parent)
-    : ExpandSettingCard(NEWFLICON(FluentIcon::FOLDER_ADD), title, content, parent),
+    : ExpandSettingCard(NEWFLICON(FluentIcon, FOLDER_ADD), title, content, parent),
       m_configItem(configItem),
       m_configName(configItem.toString()),
       m_texts(texts)

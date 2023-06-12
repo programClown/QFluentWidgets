@@ -46,7 +46,7 @@ class ExpandSettingCard : public QFrame
 {
     Q_OBJECT
 public:
-    explicit ExpandSettingCard(FluentIconBaseSPtr icon, const QString &title, const QString &content,
+    explicit ExpandSettingCard(FluentIconBase *icon, const QString &title, const QString &content,
                                QWidget *parent = nullptr);
 
     void addWidget(QWidget *widget);
@@ -94,7 +94,7 @@ class ExpandGroupSettingCard : public ExpandSettingCard
 {
     Q_OBJECT
 public:
-    explicit ExpandGroupSettingCard(FluentIconBaseSPtr icon, const QString &title, const QString &content,
+    explicit ExpandGroupSettingCard(FluentIconBase *icon, const QString &title, const QString &content,
                                     QWidget *parent = nullptr);
 
     void addGroupWidget(QWidget *widget);

@@ -6,64 +6,6 @@
 #include <QDomDocument>
 #include <QHash>
 #include <QFile>
-#include <QDebug>
-
-static void drawSvgIcon(const QString &file, QPainter *painter, QRect rect)
-{
-    QSvgRenderer svgRender(file);
-    svgRender.render(painter, QRectF(rect));
-}
-
-IconEngine::IconEngine(const QString &path) : QIconEngine(), m_iconPath(path) { }
-
-void IconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode /*mode*/, QIcon::State /*state*/)
-{
-    painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-
-    if (!m_iconPath.toLower().endsWith("svg")) {
-        painter->drawPixmap(rect, QPixmap(m_iconPath));
-    } else {
-        drawSvgIcon(m_iconPath, painter, rect);
-    }
-}
-
-QPixmap IconEngine::pixmap(const QSize &size, QIcon::Mode mode, QIcon::State state)
-{
-    QPixmap pixmap(size);
-    pixmap.fill(Qt::transparent);
-    QPainter painter(&pixmap);
-    paint(&painter, QRect(QPoint(0, 0), size), mode, state);
-
-    return pixmap;
-}
-
-QIconEngine *IconEngine::clone() const
-{
-    return new IconEngine(*this);
-}
-
-Icon::Icon(const QString &iconPath) : QIcon(new IconEngine(iconPath)), m_iconPath(iconPath) { }
-
-MenuIconEngine::MenuIconEngine(const QIcon &icon) : m_icon(icon) { }
-
-void MenuIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode /*mode*/, QIcon::State state)
-{
-    m_icon.paint(painter, rect, Qt::AlignHCenter, QIcon::Normal, state);
-}
-
-QIconEngine *MenuIconEngine::clone() const
-{
-    return new MenuIconEngine(*this);
-}
-
-QString getIconColor()
-{
-    if (QFWIns.isDarkTheme()) {
-        return "white";
-    } else {
-        return "black";
-    }
-}
 
 static QString writeSvg(const QString &iconPath, const QVector<int> &indexes, const QHash<QString, QString> &attributes)
 {
@@ -101,56 +43,108 @@ static QString writeSvg(const QString &iconPath, const QVector<int> &indexes, co
     return dom.toString();
 }
 
-void FluentIconBase::render(QPainter *painter, const QRect &rect, const QVector<int> &indexes,
-                            const QHash<QString, QString> &attributes)
+IconEngine::IconEngine(const QString &path)
+    : QIconEngine(), m_iconPath(path), m_indexes(QVector<int>()), m_attributes(QHash<QString, QString>())
 {
-    QString filePath = path();
-    //    qDebug() << filePath;
-    bool isSvg = filePath.toLower().endsWith("svg");
-    if (isSvg) {
-        if (attributes.isEmpty()) {
-            QSvgRenderer svgRender(filePath);
+    m_isSvg = m_iconPath.toLower().endsWith("svg");
+}
+
+void IconEngine::setIndexes(const QVector<int> &indexes)
+{
+    m_indexes = indexes;
+}
+
+void IconEngine::setAttributes(const QHash<QString, QString> &attributes)
+{
+    m_attributes = attributes;
+}
+
+void IconEngine::setIconPath(const QString &iconPath)
+{
+    m_iconPath = iconPath;
+    m_isSvg    = m_iconPath.toLower().endsWith("svg");
+}
+
+QString IconEngine::iconPath() const
+{
+    return m_iconPath;
+}
+
+void IconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode /*mode*/, QIcon::State /*state*/)
+{
+    if (m_iconPath.isEmpty()) {
+        return;
+    }
+    painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+
+    if (m_isSvg) {
+        if (m_attributes.isEmpty()) {
+            QSvgRenderer svgRender(m_iconPath);
             svgRender.render(painter, QRectF(rect));
         } else {
-            QString svg = writeSvg(filePath, indexes, attributes);
+            QString svg = writeSvg(m_iconPath, m_indexes, m_attributes);
             QSvgRenderer svgRender(svg.toUtf8());
             svgRender.render(painter, QRectF(rect));
         }
     } else {
-        QPixmap pixmap = icon().pixmap(rect.width(), rect.height());
+        QPixmap pixmap = QIcon(m_iconPath).pixmap(rect.width(), rect.height());
         painter->drawPixmap(rect, pixmap);
     }
 }
 
-FluentIcon *FluentIcon::create(FluentIcon::IconType t)
+QPixmap IconEngine::pixmap(const QSize &size, QIcon::Mode mode, QIcon::State state)
 {
-    if (t >= ADD && t <= BACKGROUND_FILL) {
-        return new FluentIcon(t);
+    QPixmap pixmap(size);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    paint(&painter, QRect(QPoint(0, 0), size), mode, state);
+
+    return pixmap;
+}
+
+QIconEngine *IconEngine::clone() const
+{
+    return new IconEngine(m_iconPath);
+}
+
+MenuIconEngine::MenuIconEngine(const QIcon &icon) : m_icon(icon) { }
+
+void MenuIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode /*mode*/, QIcon::State state)
+{
+    m_icon.paint(painter, rect, Qt::AlignHCenter, QIcon::Normal, state);
+}
+
+QIconEngine *MenuIconEngine::clone() const
+{
+    return new MenuIconEngine(*this);
+}
+
+QString getIconColor()
+{
+    if (QFWIns.isDarkTheme()) {
+        return "white";
+    } else {
+        return "black";
     }
-
-    // default
-    return nullptr;
 }
 
-FluentIcon *FluentIcon::create(const QString &file)
-{
-    return new FluentIcon(file);
-}
+FluentIconBase::FluentIconBase(const QString &path) : iconEngine(new IconEngine(path)) { }
 
-FluentIcon::FluentIcon(FluentIcon::IconType type, Qfw::Theme t) : m_type(type), m_theme(t), m_file(""), isIconType(true)
-{
-}
+FluentIconBase::~FluentIconBase() { }
 
-FluentIcon::FluentIcon(const QString &file, Qfw::Theme t)
-    : m_type(EMPTY_ICON), m_theme(t), m_file(file), isIconType(false)
+void FluentIconBase::render(QPainter *painter, const QRect &rect, const QVector<int> &indexes,
+                            const QHash<QString, QString> &attributes)
 {
+    iconEngine->setIndexes(indexes);
+    iconEngine->setAttributes(attributes);
+    iconEngine->paint(painter, rect, QIcon::Normal, QIcon::On);
 }
 
 QString FluentIcon::iconName(FluentIcon::IconType type)
 {
     switch (type) {
-        case EMPTY_ICON:
-            return "Empty";
+        case UNKNOWN:
+            return "Unknown";
         case ADD:
             return "Add";
         case CUT:
@@ -313,12 +307,42 @@ QString FluentIcon::iconName(FluentIcon::IconType type)
             return "BackgroundColor";
     }
 
-    return "Unkown";
+    return "Unknown";
 }
 
-FluentIcon::IconType FluentIcon::type() const
+FluentIcon::FluentIcon(const QString &customPath)
+    : FluentIconBase(customPath), m_theme(Qfw::Theme::AUTO), m_type(UNKNOWN)
 {
-    return m_type;
+}
+
+FluentIcon::FluentIcon(IconType type, Qfw::Theme t) : FluentIconBase(""), m_theme(t), m_type(type)
+{
+    iconEngine->setIconPath(iconPath());
+}
+
+FluentIcon::~FluentIcon() { }
+
+QString FluentIcon::iconPath()
+{
+    if (m_type == UNKNOWN) {
+        return "";
+    }
+
+    QString c;
+    if (m_theme == Qfw::Theme::AUTO) {
+        c = getIconColor();
+    } else if (m_theme == Qfw::Theme::DARK) {
+        c = "black";
+    } else {
+        c = "white";
+    }
+
+    return QString(":/qfluentwidgets/images/icons/%1_%2.svg").arg(iconName(m_type)).arg(c);
+}
+
+QIcon FluentIcon::icon()
+{
+    return QIcon(iconEngine->clone());
 }
 
 QString FluentIcon::typeName() const
@@ -326,39 +350,13 @@ QString FluentIcon::typeName() const
     return iconName(m_type);
 }
 
-QString FluentIcon::path()
+FluentIconBase *FluentIcon::clone()
 {
-    if (m_type == EMPTY_ICON) {
-        return "";
+    if (m_type == UNKNOWN) {
+        return new FluentIcon(iconEngine->iconPath());
     }
 
-    if (isIconType) {
-        QString c;
-        if (m_theme == Qfw::Theme::AUTO) {
-            c = getIconColor();
-        } else if (m_theme == Qfw::Theme::DARK) {
-            c = "black";
-        } else {
-            c = "white";
-        }
-
-        return QString("../QFluentWidgets/images/icons/%1_%2.svg").arg(iconName(m_type)).arg(c);
-    }
-
-    return m_file;
-}
-
-QIcon FluentIcon::icon()
-{
-    if (m_type == EMPTY_ICON) {
-       if (m_file.isEmpty())
-		{
-			return QIcon();
-		}
-        
-		return QIcon(m_file);
-    }
-    return QIcon(path());
+    return new FluentIcon(m_type, m_theme);
 }
 
 Qfw::Theme FluentIcon::theme() const
@@ -369,4 +367,5 @@ Qfw::Theme FluentIcon::theme() const
 void FluentIcon::setTheme(const Qfw::Theme &theme)
 {
     m_theme = theme;
+    iconEngine->setIconPath(iconPath());
 }

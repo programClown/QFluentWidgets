@@ -16,7 +16,7 @@ NavigationInterface::NavigationInterface(bool showMenuButton, bool showReturnBut
     FluentStyleSheet::apply("NAVIGATION_INTERFACE", this);
 }
 
-void NavigationInterface::addItem(const QString &routeKey, FluentIconBaseSPtr icon, const QString &text,
+void NavigationInterface::addItem(const QString &routeKey, FluentIconBase *icon, const QString &text,
                                   const QObject *receiver, const char *onClick, bool selectable,
                                   NavigationItemPosition position)
 {

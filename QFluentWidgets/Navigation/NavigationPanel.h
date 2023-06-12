@@ -89,7 +89,7 @@ public:
      * @param selectable: whether the item is selectable
      * @param position: where the button is added
      */
-    void addItem(const QString &routeKey, FluentIconBaseSPtr icon, const QString &text, const QObject *receiver,
+    void addItem(const QString &routeKey, FluentIconBase *icon, const QString &text, const QObject *receiver,
                  const char *onClick, bool selectable = true,
                  NavigationItemPosition position = NavigationItemPosition::TOP);
 

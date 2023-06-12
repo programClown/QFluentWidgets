@@ -8,7 +8,7 @@
 
 PushButton::PushButton(const QString &text, QWidget *parent) : PushButton(text, nullptr, parent) { }
 
-PushButton::PushButton(const QString &text, QSharedPointer<FluentIconBase> ficon, QWidget *parent)
+PushButton::PushButton(const QString &text, FluentIconBase *ficon, QWidget *parent)
     : QPushButton(text, parent), m_isPressed(false), m_ficon(ficon)
 {
     FluentStyleSheet::apply("BUTTON", this);
@@ -25,15 +25,15 @@ PushButton::PushButton(const QString &text, QSharedPointer<FluentIconBase> ficon
     setIconSize(QSize(16, 16));
 }
 
-void PushButton::setIcon(QSharedPointer<FluentIconBase> ficon)
+void PushButton::setIcon(FluentIconBase *ficon)
 {
-    m_ficon = ficon;
+    m_ficon.reset(ficon);
     update();
 }
 
-QSharedPointer<FluentIconBase> PushButton::ficon() const
+FluentIconBase *PushButton::ficon() const
 {
-    return m_ficon;
+    return m_ficon.data();
 }
 
 QIcon PushButton::icon() const
@@ -92,14 +92,14 @@ void PushButton::paintEvent(QPaintEvent *event)
 
 PrimaryPushButton::PrimaryPushButton(const QString &text, QWidget *parent) : PushButton(text, nullptr, parent) { }
 
-PrimaryPushButton::PrimaryPushButton(const QString &text, QSharedPointer<FluentIconBase> ficon, QWidget *parent)
+PrimaryPushButton::PrimaryPushButton(const QString &text, FluentIconBase *ficon, QWidget *parent)
     : PushButton(text, ficon, parent)
 {
 }
 
 void PrimaryPushButton::drawIcon(QPainter *painter, const QRect &rect)
 {
-    QSharedPointer<FluentIconBase> ic = ficon();
+    FluentIconBase *ic = ficon();
     if (ic && this->isEnabled()) {
         // reverse icon color
         Qfw::Theme theme;
@@ -132,21 +132,20 @@ RadioButton::RadioButton(const QString &text, QWidget *parent) : QRadioButton(te
     FluentStyleSheet::apply("BUTTON", this);
 }
 
-ToolButton::ToolButton(QSharedPointer<FluentIconBase> ficon, QWidget *parent)
-    : QToolButton(parent), m_isPressed(false), m_ficon(ficon)
+ToolButton::ToolButton(FluentIconBase *ficon, QWidget *parent) : QToolButton(parent), m_isPressed(false), m_ficon(ficon)
 {
     FluentStyleSheet::apply("BUTTON", this);
 }
 
-void ToolButton::setIcon(QSharedPointer<FluentIconBase> icon)
+void ToolButton::setIcon(FluentIconBase *icon)
 {
-    m_ficon = icon;
+    m_ficon.reset(icon);
     update();
 }
 
-QSharedPointer<FluentIconBase> ToolButton::ficon() const
+FluentIconBase *ToolButton::ficon() const
 {
-    return m_ficon;
+    return m_ficon.data();
 }
 
 void ToolButton::mousePressEvent(QMouseEvent *event)
@@ -187,7 +186,7 @@ void ToolButton::paintEvent(QPaintEvent *event)
     m_ficon->render(&painter, QRect(x, y, w, h));
 }
 
-TransparentToolButton::TransparentToolButton(QSharedPointer<FluentIconBase> ficon, QWidget *parent)
+TransparentToolButton::TransparentToolButton(FluentIconBase *ficon, QWidget *parent)
     : QToolButton(parent), m_ficon(ficon)
 {
     setCursor(Qt::PointingHandCursor);

@@ -82,7 +82,7 @@ void ExpandButton::paintEvent(QPaintEvent * /*event*/)
     painter.translate(width() / 2, height() / 2);
     painter.rotate(m_angle);
 
-    FluentIconSPtr ficon(NEWFLICON(FluentIcon::ARROW_DOWN));
+    QScopedPointer<FluentIcon> ficon(NEWFLICON(FluentIcon, ARROW_DOWN));
     ficon->render(&painter, QRectF(-5, -5, 9.6, 9.6).toRect());
 }
 
@@ -97,7 +97,7 @@ void ExpandButton::onClicked()
     m_rotateAni->start();
 }
 
-ExpandSettingCard::ExpandSettingCard(FluentIconBaseSPtr icon, const QString &title, const QString &content,
+ExpandSettingCard::ExpandSettingCard(FluentIconBase *icon, const QString &title, const QString &content,
                                      QWidget *parent)
     : QFrame(parent), m_isExpand(false)
 {
@@ -261,7 +261,7 @@ void GroupSeparator::paintEvent(QPaintEvent * /*event*/)
     painter.drawLine(0, 1, this->width(), 1);
 }
 
-ExpandGroupSettingCard::ExpandGroupSettingCard(FluentIconBaseSPtr icon, const QString &title, const QString &content,
+ExpandGroupSettingCard::ExpandGroupSettingCard(FluentIconBase *icon, const QString &title, const QString &content,
                                                QWidget *parent)
     : ExpandSettingCard(icon, title, content, parent)
 {

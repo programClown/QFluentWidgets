@@ -8,9 +8,9 @@ class IconWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit IconWidget(QSharedPointer<FluentIconBase> ficon, QWidget *parent = nullptr);
+    explicit IconWidget(FluentIconBase *ficon, QWidget *parent = nullptr);
 
-    void setIcon(QSharedPointer<FluentIconBase> icon);
+    void setIcon(FluentIconBase *icon);
 
     // QWidget interface
 protected:
@@ -19,7 +19,7 @@ protected:
 signals:
 
 private:
-    QSharedPointer<FluentIconBase> m_ficon;
+    QScopedPointer<FluentIconBase> m_ficon;
 };
 
 #endif  // ICONWIDGET_H

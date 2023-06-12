@@ -2,11 +2,11 @@
 
 #include <QPainter>
 
-IconWidget::IconWidget(QSharedPointer<FluentIconBase> ficon, QWidget *parent) : QWidget(parent), m_ficon(ficon) { }
+IconWidget::IconWidget(FluentIconBase *ficon, QWidget *parent) : QWidget(parent), m_ficon(ficon) { }
 
-void IconWidget::setIcon(QSharedPointer<FluentIconBase> icon)
+void IconWidget::setIcon(FluentIconBase *icon)
 {
-    m_ficon = icon;
+    m_ficon.reset(icon);
     update();
 }
 

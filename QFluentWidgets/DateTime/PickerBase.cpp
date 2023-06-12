@@ -391,8 +391,8 @@ PickerPanel::PickerPanel(QWidget *parent) : QWidget(parent)
     m_view             = new QFrame(this);
     m_itemMaskWidget   = new ItemMaskWidget(m_listWidgets, this);
     m_hSeparatorWidget = new SeparatorWidget(Qt::Horizontal, m_view);
-    m_yesButton        = new TransparentToolButton(NEWFLICON(FluentIcon::ACCEPT), m_view);
-    m_cancelButton     = new TransparentToolButton(NEWFLICON(FluentIcon::CLOSE), m_view);
+    m_yesButton        = new TransparentToolButton(NEWFLICON(FluentIcon, ACCEPT), m_view);
+    m_cancelButton     = new TransparentToolButton(NEWFLICON(FluentIcon, CLOSE), m_view);
 
     m_hBoxLayout   = new QHBoxLayout(this);
     m_listLayout   = new QHBoxLayout();

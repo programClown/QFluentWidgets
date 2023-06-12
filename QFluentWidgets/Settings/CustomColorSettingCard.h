@@ -13,7 +13,7 @@ class CustomColorSettingCard : public ExpandGroupSettingCard
 {
     Q_OBJECT
 public:
-    explicit CustomColorSettingCard(const QVariant &configItem, FluentIconBaseSPtr icon, const QString &title,
+    explicit CustomColorSettingCard(const QVariant &configItem, FluentIconBase *icon, const QString &title,
                                     const QString &content = "", QWidget *parent = nullptr);
 
 private:

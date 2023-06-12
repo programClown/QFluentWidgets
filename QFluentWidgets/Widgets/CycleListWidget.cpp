@@ -7,19 +7,27 @@
 #include <QPainter>
 #include <QWheelEvent>
 
-ScrollIcon::ScrollIcon(ScrollIcon::Type type, Qfw::Theme t) : m_type(type), m_theme(t)
+ScrollIcon::ScrollIcon(IconType type, Qfw::Theme t) : FluentIconBase(""), m_theme(t), m_type(type)
+{
+    iconEngine->setIconPath(iconPath());
+}
+
+ScrollIcon::~ScrollIcon() { }
+
+QString ScrollIcon::iconName(ScrollIcon::IconType type)
 {
     switch (type) {
         case UP:
-            m_name = "Up";
-            break;
+            return "Up";
+
         case DOWN:
-            m_name = "Down";
-            break;
+            return "Down";
     }
+
+    return "Unknown";
 }
 
-QString ScrollIcon::path()
+QString ScrollIcon::iconPath()
 {
     QString colorName;
     if (m_theme == Qfw::Theme::AUTO) {
@@ -32,30 +40,36 @@ QString ScrollIcon::path()
         }
     }
 
-    return QString(":/qfluentwidgets/images/time_picker/%1_%2.svg").arg(m_name).arg(colorName);
+    return QString(":/qfluentwidgets/images/time_picker/%1_%2.svg").arg(iconName(m_type)).arg(colorName);
 }
 
 QIcon ScrollIcon::icon()
 {
-    return QIcon(path());
+    return QIcon(iconEngine->clone());
+}
+
+QString ScrollIcon::typeName() const
+{
+    return iconName(m_type);
+}
+
+FluentIconBase *ScrollIcon::clone()
+{
+    return new ScrollIcon(m_type, m_theme);
+}
+
+Qfw::Theme ScrollIcon::theme() const
+{
+    return m_theme;
 }
 
 void ScrollIcon::setTheme(const Qfw::Theme &theme)
 {
     m_theme = theme;
+    iconEngine->setIconPath(iconPath());
 }
 
-ScrollIcon::Type ScrollIcon::type() const
-{
-    return m_type;
-}
-
-QString ScrollIcon::typeName() const
-{
-    return m_name;
-}
-
-ScrollButton::ScrollButton(ScrollIconSPtr icon, QWidget *parent) : QToolButton(parent), isPressed(false), m_icon(icon)
+ScrollButton::ScrollButton(FluentIconBase *icon, QWidget *parent) : QToolButton(parent), isPressed(false), m_icon(icon)
 {
     installEventFilter(this);
 }
@@ -101,8 +115,8 @@ CycleListWidget::CycleListWidget(const QVariantList &items, const QSize &itemSiz
                                  QWidget *parent)
     : QListWidget(parent), m_itemSize(itemSize), m_align(align), m_isCycle(false), m_currentIndex(-1)
 {
-    m_upButton       = new ScrollButton(ScrollIconSPtr(new ScrollIcon(ScrollIcon::UP)), this);
-    m_downButton     = new ScrollButton(ScrollIconSPtr(new ScrollIcon(ScrollIcon::DOWN)), this);
+    m_upButton       = new ScrollButton(new ScrollIcon(ScrollIcon::UP), this);
+    m_downButton     = new ScrollButton(new ScrollIcon(ScrollIcon::DOWN), this);
     m_scrollDuration = 250;
     m_originItems    = items;
 

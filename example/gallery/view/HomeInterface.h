@@ -18,7 +18,7 @@ public:
 private:
     QVBoxLayout *m_vBoxLayout;
     QLabel *m_galleryLabel;
-    QPixmap *m_banner;
+    QPixmap m_banner;
     LinkCardView *m_linkCardView;
 };
 

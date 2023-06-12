@@ -9,8 +9,7 @@
 #include <QMouseEvent>
 #include <QDebug>
 
-LineEditButton::LineEditButton(QSharedPointer<FluentIconBase> ficon, QWidget *parent)
-    : QToolButton(parent), m_ficon(ficon)
+LineEditButton::LineEditButton(FluentIconBase *ficon, QWidget *parent) : QToolButton(parent), m_ficon(ficon)
 {
     setFixedSize(31, 23);
     setIconSize(QSize(10, 10));
@@ -51,7 +50,7 @@ LineEdit::LineEdit(QWidget *parent) : QLineEdit(parent), m_isClearButtonEnabled(
     setAttribute(Qt::WA_MacShowFocusRect, false);
 
     m_hBoxLayout  = new QHBoxLayout(this);
-    m_clearButton = new LineEditButton(NEWFLICON(FluentIcon::CLOSE), this);
+    m_clearButton = new LineEditButton(NEWFLICON(FluentIcon, CLOSE), this);
     m_clearButton->setFixedSize(29, 25);
     m_clearButton->hide();
 
@@ -141,7 +140,7 @@ QHBoxLayout *LineEdit::hBoxLayout() const
 
 SearchLineEdit::SearchLineEdit(QWidget *parent) : LineEdit(parent)
 {
-    m_searchButton       = new LineEditButton(NEWFLICON(FluentIcon::SEARCH), this);
+    m_searchButton       = new LineEditButton(NEWFLICON(FluentIcon, SEARCH), this);
     QHBoxLayout *hLayout = hBoxLayout();
     hLayout->addWidget(m_searchButton, 0, Qt::AlignRight);
     setClearButtonEnabled(true);

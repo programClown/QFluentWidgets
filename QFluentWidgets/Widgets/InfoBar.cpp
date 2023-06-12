@@ -14,6 +14,7 @@ InfoBarCloseButton::InfoBarCloseButton(QWidget *parent) : QToolButton(parent)
     setCursor(Qt::PointingHandCursor);
     setObjectName("infoBarCloseButton");
     FluentStyleSheet::apply("INFO_BAR", this);
+    m_ficon.reset(NEWFLICON(FluentIcon, CLOSE));
 }
 
 void InfoBarCloseButton::paintEvent(QPaintEvent *event)
@@ -22,28 +23,33 @@ void InfoBarCloseButton::paintEvent(QPaintEvent *event)
 
     QPainter painter(this);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-    NEWFLICON(FluentIcon::CLOSE)->render(&painter, QRect(12, 12, 12, 12));
+    m_ficon->render(&painter, QRect(12, 12, 12, 12));
 }
 
-InfoBarIcon::InfoBarIcon(InfoBarIcon::Type type, Qfw::Theme t) : m_type(type), m_theme(t)
+QString InfoBarIcon::iconName(InfoBarIcon::IconType type)
 {
     switch (type) {
         case INFORMATION:
-            m_name = "Info";
-            break;
+            return "Info";
         case SUCCESS:
-            m_name = "Success";
-            break;
+            return "Success";
         case WARNING:
-            m_name = "Warning";
-            break;
+            return "Warning";
         case ERROR:
-            m_name = "Error";
-            break;
+            return "Error";
     }
+
+    return "Unknown";
 }
 
-QString InfoBarIcon::path()
+InfoBarIcon::InfoBarIcon(IconType type, Qfw::Theme t) : FluentIconBase(""), m_theme(t), m_type(type)
+{
+    iconEngine->setIconPath(iconPath());
+}
+
+InfoBarIcon::~InfoBarIcon() { }
+
+QString InfoBarIcon::iconPath()
 {
     QString colorName;
     if (m_theme == Qfw::Theme::AUTO) {
@@ -52,30 +58,36 @@ QString InfoBarIcon::path()
         colorName = Qfw::ThemeString(m_theme).toLower();
     }
 
-    return QString(":/qfluentwidgets/images/info_bar/%1_%2.svg").arg(m_name).arg(colorName);
+    return QString(":/qfluentwidgets/images/info_bar/%1_%2.svg").arg(iconName(m_type)).arg(colorName);
 }
 
 QIcon InfoBarIcon::icon()
 {
-    return QIcon(path());
+    return QIcon(iconEngine->clone());
+}
+
+QString InfoBarIcon::typeName() const
+{
+    return iconName(m_type);
+}
+
+FluentIconBase *InfoBarIcon::clone()
+{
+    return new InfoBarIcon(m_type, m_theme);
+}
+
+Qfw::Theme InfoBarIcon::theme() const
+{
+    return m_theme;
 }
 
 void InfoBarIcon::setTheme(const Qfw::Theme &theme)
 {
     m_theme = theme;
+    iconEngine->setIconPath(iconPath());
 }
 
-InfoBarIcon::Type InfoBarIcon::type() const
-{
-    return m_type;
-}
-
-QString InfoBarIcon::typeName() const
-{
-    return m_name;
-}
-
-InfoIconWidget::InfoIconWidget(FluentIconBaseSPtr icon, QWidget *parent) : QWidget(parent), m_icon(icon)
+InfoIconWidget::InfoIconWidget(FluentIconBase *icon, QWidget *parent) : QWidget(parent), m_icon(icon)
 {
     setFixedSize(15, 15);
 }
@@ -88,9 +100,12 @@ void InfoIconWidget::paintEvent(QPaintEvent * /*event*/)
     QPainter painter(this);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
-    InfoBarIcon *barIcon = static_cast<InfoBarIcon *>(m_icon.data());
-
-    if (barIcon && barIcon->type() != InfoBarIcon::INFORMATION) {
+    InfoBarIcon *barIcon = dynamic_cast<InfoBarIcon *>(m_icon.data());
+    bool isInformation   = false;
+    if (barIcon) {
+        isInformation = barIcon->iconEngine->iconPath().split("/").last().contains("Info");
+    }
+    if (isInformation) {
         m_icon->render(&painter, rect());
     } else {
         QHash<QString, QString> attributes;
@@ -100,14 +115,13 @@ void InfoIconWidget::paintEvent(QPaintEvent * /*event*/)
     }
 }
 
-InfoBar::InfoBar(FluentIconBaseSPtr ficon, const QString &title, const QString &content, Qt::Orientation orient,
+InfoBar::InfoBar(FluentIconBase *ficon, const QString &title, const QString &content, Qt::Orientation orient,
                  bool isClosable, int duration, InfoBarPosition position, QWidget *parent)
-    : QFrame(parent)
+    : QFrame(parent), m_ficon(ficon)
 {
     m_title      = title;
     m_content    = content;
     m_orient     = orient;
-    m_ficon      = ficon;
     m_duration   = duration;
     m_isClosable = isClosable;
     m_position   = position;
@@ -115,7 +129,7 @@ InfoBar::InfoBar(FluentIconBaseSPtr ficon, const QString &title, const QString &
     m_titleLabel   = new QLabel(title, this);
     m_contentLabel = new QLabel(this);
     m_closeButton  = new InfoBarCloseButton(this);
-    m_iconWidget   = new InfoIconWidget(ficon);
+    m_iconWidget   = new InfoIconWidget(m_ficon->clone());
 
     m_vBoxLayout = new QVBoxLayout(this);
     m_hBoxLayout = new QHBoxLayout();
@@ -152,9 +166,8 @@ void InfoBar::setCustomBackgroundColor(const QColor &light, const QColor &dark)
     update();
 }
 
-InfoBar *InfoBar::creator(FluentIconBaseSPtr ficon, const QString &title, const QString &content,
-                          Qt::Orientation orient, bool isClosable, int duration, InfoBarPosition position,
-                          QWidget *parent)
+InfoBar *InfoBar::creator(FluentIconBase *ficon, const QString &title, const QString &content, Qt::Orientation orient,
+                          bool isClosable, int duration, InfoBarPosition position, QWidget *parent)
 {
     InfoBar *cls = new InfoBar(ficon, title, content, orient, isClosable, duration, position, parent);
     cls->setAttribute(Qt::WA_DeleteOnClose);
@@ -165,29 +178,25 @@ InfoBar *InfoBar::creator(FluentIconBaseSPtr ficon, const QString &title, const 
 InfoBar *InfoBar::info(const QString &title, const QString &content, Qt::Orientation orient, bool isClosable,
                        int duration, InfoBarPosition position, QWidget *parent)
 {
-    return creator(InfoBarIconSPtr(new InfoBarIcon(InfoBarIcon::INFORMATION)), title, content, orient, isClosable,
-                   duration, position, parent);
+    return creator(NEWFLICON(InfoBarIcon, INFORMATION), title, content, orient, isClosable, duration, position, parent);
 }
 
 InfoBar *InfoBar::success(const QString &title, const QString &content, Qt::Orientation orient, bool isClosable,
                           int duration, InfoBarPosition position, QWidget *parent)
 {
-    return creator(InfoBarIconSPtr(new InfoBarIcon(InfoBarIcon::SUCCESS)), title, content, orient, isClosable, duration,
-                   position, parent);
+    return creator(NEWFLICON(InfoBarIcon, SUCCESS), title, content, orient, isClosable, duration, position, parent);
 }
 
 InfoBar *InfoBar::warning(const QString &title, const QString &content, Qt::Orientation orient, bool isClosable,
                           int duration, InfoBarPosition position, QWidget *parent)
 {
-    return creator(InfoBarIconSPtr(new InfoBarIcon(InfoBarIcon::WARNING)), title, content, orient, isClosable, duration,
-                   position, parent);
+    return creator(NEWFLICON(InfoBarIcon, WARNING), title, content, orient, isClosable, duration, position, parent);
 }
 
 InfoBar *InfoBar::error(const QString &title, const QString &content, Qt::Orientation orient, bool isClosable,
                         int duration, InfoBarPosition position, QWidget *parent)
 {
-    return creator(InfoBarIconSPtr(new InfoBarIcon(InfoBarIcon::ERROR)), title, content, orient, isClosable, duration,
-                   position, parent);
+    return creator(NEWFLICON(InfoBarIcon, ERROR), title, content, orient, isClosable, duration, position, parent);
 }
 
 void InfoBar::initWidget()
@@ -210,11 +219,13 @@ void InfoBar::setQss()
 
     InfoBarIcon *barIcon = dynamic_cast<InfoBarIcon *>(m_ficon.data());
     if (barIcon) {
-        setProperty("type", barIcon->typeName());
+        QString typeName = barIcon->iconEngine->iconPath().split("/").last().split("_").first();
+        setProperty("type", typeName);
     } else {
         FluentIcon *fluentIcon = dynamic_cast<FluentIcon *>(m_ficon.data());
         if (fluentIcon) {
-            setProperty("type", fluentIcon->typeName());
+            QString typeName = fluentIcon->iconEngine->iconPath().split("/").last().split("_").first();
+            setProperty("type", typeName);
         }
     }
 

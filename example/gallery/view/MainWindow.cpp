@@ -3,10 +3,13 @@
 
 #include "GalleryTitleBar.h"
 #include "HomeInterface.h"
+#include "GalleryInterface.h"
 #include "common/SignalBus.h"
+#include "common/GalleryStyleSheet.h"
 #include "components/AvatarWidget.h"
 
 #include <Widgets/StackedWidget.h>
+#include <DialogBox/Dialog.h>
 
 #include <QPushButton>
 #include <QtWidgets/qboxlayout.h>
@@ -165,7 +168,7 @@ void MainWindow::initLayout()
 
 void MainWindow::initNavigation()
 {
-    m_navigationInterface->addItem(m_homeInterface->objectName(), NEWFLICON(FluentIcon::HOME), "Home", this,
+    m_navigationInterface->addItem(m_homeInterface->objectName(), NEWFLICON(FluentIcon, HOME), "Home", this,
                                    SLOT(homeInterfaceClicked()));
 
     m_navigationInterface->addSeparator();
@@ -199,6 +202,13 @@ void MainWindow::initWindow()
 
     QRect desk = QApplication::desktop()->availableGeometry();
     move(desk.width() / 2 - width() / 2, desk.height() / 2 - height() / 2);
+
+    GalleryStyleSheet::apply(GalleryStyleSheet::MAIN_WINDOW, this);
+}
+
+void MainWindow::switchTo(QWidget *widget, bool triggerByUser)
+{
+    m_stackWidget->setCurrentWidget(widget, !triggerByUser);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
@@ -209,14 +219,29 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 void MainWindow::showMessageBox()
 {
     qDebug() << __FUNCTION__ << __LINE__;
+
+    MessageBox *m = new MessageBox(tr("This is a help message"),
+                                   tr("You clicked a customized navigation widget. You can add more custom widgets by "
+                                      "calling `NavigationInterface.addWidget()` "),
+                                   this);
+    m->exec();
 }
 
-void MainWindow::switchToSample(QString routeKey, int index) { }
+void MainWindow::switchToSample(QString routeKey, int index)
+{
+    QList<GalleryInterface *> list = findChildren<GalleryInterface *>();
+    for (GalleryInterface *w : list) {
+        if (w->objectName() == routeKey) {
+            m_stackWidget->setCurrentWidget(w);
+            w->scrollToCard(index);
+        }
+    }
+}
 
 void MainWindow::homeInterfaceClicked(bool user)
 {
     qDebug() << __FUNCTION__ << __LINE__ << user;
-    //    switchTo(m_homeInterface, user);
+    switchTo(m_homeInterface, user);
 }
 
 void MainWindow::waitReady()

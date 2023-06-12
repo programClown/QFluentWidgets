@@ -139,6 +139,11 @@ void SmoothScrollArea::setScrollAnimation(Qt::Orientation orient, int duration, 
     bar->setScrollAnimation(duration, easing);
 }
 
+void SmoothScrollArea::setViewportMargins(int left, int top, int right, int bottom)
+{
+    QScrollArea::setViewportMargins(left, top, right, bottom);
+}
+
 void SmoothScrollArea::wheelEvent(QWheelEvent *event)
 {
     if (event->modifiers() == Qt::NoModifier) {

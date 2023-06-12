@@ -49,9 +49,8 @@ void StateCloseButton::paintEvent(QPaintEvent * /*event*/)
         painter.setOpacity(0.8);
     }
 
-    // NOTE:未完成
-    FluentIcon ficon(FluentIcon::CLOSE);
-    ficon.render(&painter, rect());
+    QScopedPointer<FluentIcon> ficon(NEWFLICON(FluentIcon, CLOSE));
+    ficon->render(&painter, rect());
 }
 
 StateToolTip::StateToolTip(const QString &title, const QString &content, QWidget *parent)

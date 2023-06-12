@@ -11,13 +11,13 @@ class ButtonDemo : public QWidget
 public:
     ButtonDemo(QWidget *parent = nullptr) : QWidget(parent)
     {
-        ToolButton *toolButton  = new ToolButton(NEWFLICON(FluentIcon::SETTING), this);
+        ToolButton *toolButton  = new ToolButton(NEWFLICON(FluentIcon, SETTING), this);
         PushButton *pushButton1 = new PushButton("Standard push button", nullptr, this);
-        PushButton *pushButton2 = new PushButton("Standard push button with icon", NEWFLICON(FluentIcon::FOLDER), this);
+        PushButton *pushButton2 = new PushButton("Standard push button with icon", NEWFLICON(FluentIcon, FOLDER), this);
 
         PrimaryPushButton *primaryButton1 = new PrimaryPushButton("Accent style button", nullptr, this);
         PrimaryPushButton *primaryButton2 =
-                new PrimaryPushButton("Accent style button with icon", NEWFLICON(FluentIcon::UPDATE), this);
+                new PrimaryPushButton("Accent style button with icon", NEWFLICON(FluentIcon, UPDATE), this);
 
         HyperlinkButton *hyperlinkButton =
                 new HyperlinkButton("https://github.com/zhiyiYo/PyQt-Fluent-Widgets", "Hyper link button", this);

@@ -16,8 +16,8 @@ NavigationPanel::NavigationPanel(bool minimalEnabled, QWidget *parent) : QFrame(
     scrollArea   = new ScrollArea(this);
     scrollWidget = new QWidget();
 
-    menuButton   = new NavigationToolButton(NEWFLICON(FluentIcon::MENU), this);
-    returnButton = new NavigationToolButton(NEWFLICON(FluentIcon::RETURN), this);
+    menuButton   = new NavigationToolButton(NEWFLICON(FluentIcon, MENU), this);
+    returnButton = new NavigationToolButton(NEWFLICON(FluentIcon, RETURN), this);
 
     vBoxLayout   = new NavigationItemLayout(this);
     topLayout    = new NavigationItemLayout();
@@ -100,7 +100,7 @@ void NavigationPanel::initLayout()
     topLayout->addWidget(menuButton, 0, Qt::AlignTop);
 }
 
-void NavigationPanel::addItem(const QString &routeKey, FluentIconBaseSPtr icon, const QString &text,
+void NavigationPanel::addItem(const QString &routeKey, FluentIconBase *icon, const QString &text,
                               const QObject *receiver, const char *onClick, bool selectable,
                               NavigationItemPosition position)
 {

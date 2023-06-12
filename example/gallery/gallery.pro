@@ -14,22 +14,46 @@ SOURCES += \
     common/GalleryConfig.cpp \
     common/GalleryStyleSheet.cpp \
     common/SignalBus.cpp \
+    common/Translator.cpp \
+    common/Trie.cpp \
     components/AvatarWidget.cpp \
     components/LinkCard.cpp \
+    components/SampleCard.cpp \
     main.cpp \
+    view/BasicInputInterface.cpp \
+    view/DateTimeInterface.cpp \
+    view/DialogInterface.cpp \
+    view/GalleryInterface.cpp \
     view/GalleryTitleBar.cpp \
     view/HomeInterface.cpp \
-    view/MainWindow.cpp
+    view/IconInterface.cpp \
+    view/LayoutInterface.cpp \
+    view/MainWindow.cpp \
+    view/MaterialInterface.cpp \
+    view/MenuInterface.cpp \
+    view/ScrollInterface.cpp
 
 HEADERS += \
     common/GalleryConfig.h \
     common/GalleryStyleSheet.h \
     common/SignalBus.h \
+    common/Translator.h \
+    common/Trie.h \
     components/AvatarWidget.h \
     components/LinkCard.h \
+    components/SampleCard.h \
+    view/BasicInputInterface.h \
+    view/DateTimeInterface.h \
+    view/DialogInterface.h \
+    view/GalleryInterface.h \
     view/GalleryTitleBar.h \
     view/HomeInterface.h \
-    view/MainWindow.h
+    view/IconInterface.h \
+    view/LayoutInterface.h \
+    view/MainWindow.h \
+    view/MaterialInterface.h \
+    view/MenuInterface.h \
+    view/ScrollInterface.h
 
 FORMS += \
     MainWindow.ui
