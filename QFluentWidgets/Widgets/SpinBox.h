@@ -51,24 +51,20 @@ private:
     QScopedPointer<FluentIconBase> m_icon;
 };
 
-class SpinBoxBase : public QObject
+class SpinBoxBase
 {
-    Q_OBJECT
 public:
-    SpinBoxBase(QAbstractSpinBox *parent = nullptr) : QObject(parent), m_parent(parent) { }
+    SpinBoxBase() { }
 
     QHBoxLayout *hBoxLayout;
     SpinButton *upButton;
     SpinButton *downButton;
 
 protected:
-    virtual void setUpUi();
-    virtual void showContextMenu(const QPoint &pos);
-    virtual void drawBorderBottom();
+    virtual void setUpUi(QAbstractSpinBox *spinbox);
+    virtual void showContextMenu(QAbstractSpinBox *spinbox, const QPoint &pos);
+    virtual void drawBorderBottom(QAbstractSpinBox *spinbox);
     virtual QLineEdit *lineEdit() const = 0;
-
-private:
-    QAbstractSpinBox *m_parent;
 };
 
 class SpinBox : public QSpinBox, public SpinBoxBase

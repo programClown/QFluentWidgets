@@ -82,15 +82,15 @@ void SpinButton::paintEvent(QPaintEvent *event)
     m_icon->render(&painter, QRect(10, 9, 11, 11));
 }
 
-void SpinBoxBase::setUpUi()
+void SpinBoxBase::setUpUi(QAbstractSpinBox *spinbox)
 {
-    FluentStyleSheet::apply("SPIN_BOX", m_parent);
-    m_parent->setButtonSymbols(QSpinBox::NoButtons);
-    m_parent->setFixedHeight(33);
+    FluentStyleSheet::apply("SPIN_BOX", spinbox);
+    spinbox->setButtonSymbols(QSpinBox::NoButtons);
+    spinbox->setFixedHeight(33);
 
-    hBoxLayout = new QHBoxLayout(m_parent);
-    upButton   = new SpinButton(NEWFLICON(SpinIcon, UP), m_parent);
-    downButton = new SpinButton(NEWFLICON(SpinIcon, DOWN), m_parent);
+    hBoxLayout = new QHBoxLayout(spinbox);
+    upButton   = new SpinButton(NEWFLICON(SpinIcon, UP), spinbox);
+    downButton = new SpinButton(NEWFLICON(SpinIcon, DOWN), spinbox);
 
     hBoxLayout->setContentsMargins(0, 4, 4, 4);
     hBoxLayout->setSpacing(5);
@@ -98,33 +98,33 @@ void SpinBoxBase::setUpUi()
     hBoxLayout->addWidget(downButton, 0, Qt::AlignRight);
     hBoxLayout->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
-    connect(upButton, &SpinButton::clicked, m_parent, &QAbstractSpinBox::stepUp);
-    connect(downButton, &SpinButton::clicked, m_parent, &QAbstractSpinBox::stepDown);
+    // connect(upButton, &SpinButton::clicked, m_parent, &QAbstractSpinBox::stepUp);
+    // connect(downButton, &SpinButton::clicked, m_parent, &QAbstractSpinBox::stepDown);
 
-    m_parent->setAttribute(Qt::WA_MacShowFocusRect, false);
-    m_parent->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(m_parent, &QAbstractSpinBox::customContextMenuRequested, this, &SpinBoxBase::showContextMenu);
+    spinbox->setAttribute(Qt::WA_MacShowFocusRect, false);
+    spinbox->setContextMenuPolicy(Qt::CustomContextMenu);
+    // connect(m_parent, &QAbstractSpinBox::customContextMenuRequested, this, &SpinBoxBase::showContextMenu);
 }
 
-void SpinBoxBase::showContextMenu(const QPoint &pos)
+void SpinBoxBase::showContextMenu(QAbstractSpinBox *spinbox, const QPoint &pos)
 {
     QScopedPointer<LineEditMenu> menu(new LineEditMenu(lineEdit()));
-    menu->exec(m_parent->mapToGlobal(pos));
+    menu->exec(spinbox->mapToGlobal(pos));
 }
 
-void SpinBoxBase::drawBorderBottom()
+void SpinBoxBase::drawBorderBottom(QAbstractSpinBox *spinbox)
 {
-    if (!m_parent->hasFocus()) {
+    if (!spinbox->hasFocus()) {
         return;
     }
 
-    QPainter painter(m_parent);
+    QPainter painter(spinbox);
     painter.setRenderHints(QPainter::Antialiasing);
     painter.setPen(Qt::NoPen);
 
     QPainterPath path;
-    int w = m_parent->width();
-    int h = m_parent->height();
+    int w = spinbox->width();
+    int h = spinbox->height();
     path.addRoundedRect(QRectF(0, h - 10, w, 10), 5, 5);
 
     QPainterPath rectPath;
@@ -134,9 +134,13 @@ void SpinBoxBase::drawBorderBottom()
     painter.fillPath(path, themeColor());
 }
 
-SpinBox::SpinBox(QWidget *parent) : QSpinBox(parent), SpinBoxBase(this)
+SpinBox::SpinBox(QWidget *parent) : QSpinBox(parent), SpinBoxBase()
 {
-    setUpUi();
+    setUpUi(this);
+    connect(upButton, &SpinButton::clicked, this, &QAbstractSpinBox::stepUp);
+    connect(downButton, &SpinButton::clicked, this, &QAbstractSpinBox::stepDown);
+    connect(this, &QAbstractSpinBox::customContextMenuRequested, this,
+            [this](const QPoint &pos) { showContextMenu(this, pos); });
 }
 
 QLineEdit *SpinBox::lineEdit() const
@@ -147,12 +151,16 @@ QLineEdit *SpinBox::lineEdit() const
 void SpinBox::paintEvent(QPaintEvent *event)
 {
     QSpinBox::paintEvent(event);
-    drawBorderBottom();
+    drawBorderBottom(this);
 }
 
-DoubleSpinBox::DoubleSpinBox(QWidget *parent) : QDoubleSpinBox(parent), SpinBoxBase(this)
+DoubleSpinBox::DoubleSpinBox(QWidget *parent) : QDoubleSpinBox(parent), SpinBoxBase()
 {
-    setUpUi();
+    setUpUi(this);
+    connect(upButton, &SpinButton::clicked, this, &QAbstractSpinBox::stepUp);
+    connect(downButton, &SpinButton::clicked, this, &QAbstractSpinBox::stepDown);
+    connect(this, &QAbstractSpinBox::customContextMenuRequested, this,
+            [this](const QPoint &pos) { showContextMenu(this, pos); });
 }
 
 QLineEdit *DoubleSpinBox::lineEdit() const
@@ -163,12 +171,16 @@ QLineEdit *DoubleSpinBox::lineEdit() const
 void DoubleSpinBox::paintEvent(QPaintEvent *event)
 {
     QDoubleSpinBox::paintEvent(event);
-    drawBorderBottom();
+    drawBorderBottom(this);
 }
 
-TimeEdit::TimeEdit(QWidget *parent) : QTimeEdit(parent), SpinBoxBase(this)
+TimeEdit::TimeEdit(QWidget *parent) : QTimeEdit(parent), SpinBoxBase()
 {
-    setUpUi();
+    setUpUi(this);
+    connect(upButton, &SpinButton::clicked, this, &QAbstractSpinBox::stepUp);
+    connect(downButton, &SpinButton::clicked, this, &QAbstractSpinBox::stepDown);
+    connect(this, &QAbstractSpinBox::customContextMenuRequested, this,
+            [this](const QPoint &pos) { showContextMenu(this, pos); });
 }
 
 QLineEdit *TimeEdit::lineEdit() const
@@ -179,12 +191,16 @@ QLineEdit *TimeEdit::lineEdit() const
 void TimeEdit::paintEvent(QPaintEvent *event)
 {
     QTimeEdit::paintEvent(event);
-    drawBorderBottom();
+    drawBorderBottom(this);
 }
 
-DateTimeEdit::DateTimeEdit(QWidget *parent) : QDateTimeEdit(parent), SpinBoxBase(this)
+DateTimeEdit::DateTimeEdit(QWidget *parent) : QDateTimeEdit(parent), SpinBoxBase()
 {
-    setUpUi();
+    setUpUi(this);
+    connect(upButton, &SpinButton::clicked, this, &QAbstractSpinBox::stepUp);
+    connect(downButton, &SpinButton::clicked, this, &QAbstractSpinBox::stepDown);
+    connect(this, &QAbstractSpinBox::customContextMenuRequested, this,
+            [this](const QPoint &pos) { showContextMenu(this, pos); });
 }
 
 QLineEdit *DateTimeEdit::lineEdit() const
@@ -195,12 +211,16 @@ QLineEdit *DateTimeEdit::lineEdit() const
 void DateTimeEdit::paintEvent(QPaintEvent *event)
 {
     QDateTimeEdit::paintEvent(event);
-    drawBorderBottom();
+    drawBorderBottom(this);
 }
 
-DateEdit::DateEdit(QWidget *parent) : QDateEdit(parent), SpinBoxBase(this)
+DateEdit::DateEdit(QWidget *parent) : QDateEdit(parent), SpinBoxBase()
 {
-    setUpUi();
+    setUpUi(this);
+    connect(upButton, &SpinButton::clicked, this, &QAbstractSpinBox::stepUp);
+    connect(downButton, &SpinButton::clicked, this, &QAbstractSpinBox::stepDown);
+    connect(this, &QAbstractSpinBox::customContextMenuRequested, this,
+            [this](const QPoint &pos) { showContextMenu(this, pos); });
 }
 
 QLineEdit *DateEdit::lineEdit() const
@@ -211,5 +231,5 @@ QLineEdit *DateEdit::lineEdit() const
 void DateEdit::paintEvent(QPaintEvent *event)
 {
     QDateEdit::paintEvent(event);
-    drawBorderBottom();
+    drawBorderBottom(this);
 }
