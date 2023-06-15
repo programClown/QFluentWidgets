@@ -10,12 +10,14 @@
 
 class SpinIcon : public FluentIconBase
 {
+    Q_OBJECT
 public:
     enum IconType
     {
         UP = 0,
         DOWN
     };
+    Q_ENUM(IconType)
     //    const QString UP = "UP";
     //    const QString DOWN     = "DOWN";
     static QString iconName(IconType type);
@@ -28,6 +30,7 @@ public:
     // FluentIconBase interface
     QIcon icon() override;
     QString typeName() const override;
+    QString enumName() const override;
     FluentIconBase *clone() override;
     Qfw::Theme theme() const;
     void setTheme(const Qfw::Theme &theme) override;

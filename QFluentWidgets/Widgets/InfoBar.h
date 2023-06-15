@@ -26,6 +26,7 @@ private:
 
 class InfoBarIcon : public FluentIconBase
 {
+    Q_OBJECT
 public:
     enum IconType
     {
@@ -34,6 +35,8 @@ public:
         WARNING,
         ERROR
     };
+
+    Q_ENUM(IconType)
     //    const QString INFORMATION = "Info";
     //    const QString SUCCESS     = "Success";
     //    const QString WARNING     = "Warning";
@@ -48,6 +51,7 @@ public:
     // FluentIconBase interface
     QIcon icon() override;
     QString typeName() const override;
+    QString enumName() const override;
     FluentIconBase *clone() override;
     Qfw::Theme theme() const;
     void setTheme(const Qfw::Theme &theme) override;

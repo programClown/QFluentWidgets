@@ -3,13 +3,27 @@
 
 #include "GalleryTitleBar.h"
 #include "HomeInterface.h"
+#include "IconInterface.h"
+#include "BasicInputInterface.h"
+#include "DateTimeInterface.h"
+#include "DialogInterface.h"
+#include "LayoutInterface.h"
+#include "MenuInterface.h"
+#include "MaterialInterface.h"
+#include "ScrollInterface.h"
+#include "StatusInfoInterface.h"
+#include "TextInterface.h"
+#include "ViewInterface.h"
+
 #include "GalleryInterface.h"
 #include "common/SignalBus.h"
 #include "common/GalleryStyleSheet.h"
 #include "components/AvatarWidget.h"
+#include "common/GalleryIcon.h"
 
 #include <Widgets/StackedWidget.h>
 #include <DialogBox/Dialog.h>
+#include <Common/Config.h>
 
 #include <QPushButton>
 #include <QtWidgets/qboxlayout.h>
@@ -19,6 +33,8 @@
 #include <FramelessHelper/Widgets/standardsystembutton.h>
 #include <FramelessHelper/Widgets/framelesswidgetshelper.h>
 #include "shared/settings.h"
+
+#include <QFramelessWindow.h>
 
 #include <QBoxLayout>
 #include <QDebug>
@@ -66,6 +82,11 @@ void StackedWidget::setCurrentIndex(int index, bool popOut)
     setCurrentWidget(m_view->widget(index), popOut);
 }
 
+PopUpAniStackedWidget *StackedWidget::view() const
+{
+    return m_view;
+}
+
 FRAMELESSHELPER_USE_NAMESPACE
 
 using namespace Global;
@@ -78,14 +99,28 @@ MainWindow::MainWindow(QWidget *parent, const Qt::WindowFlags flags) : Frameless
 {
     initialize();
 
-    m_hBoxLayout = new QHBoxLayout();
-    setLayout(m_hBoxLayout);
+    QWidget *w = new QWidget();
+
+    m_hBoxLayout = new QHBoxLayout(w);
+    setCentralWidget(w);
+
     m_widgetLayout = new QHBoxLayout();
 
     m_stackWidget         = new StackedWidget(this);
     m_navigationInterface = new NavigationInterface(true, true, this);
 
     m_homeInterface = new HomeInterface(this);
+    //    m_iconInterface       = new IconInterface(this);
+    m_basicInputInterface = new BasicInputInterface(this);
+    m_dateTimeInterface   = new DateTimeInterface(this);
+    m_dialogInterface     = new DialogInterface(this);
+    m_layoutInterface     = new LayoutInterface(this);
+    m_menuInterface       = new MenuInterface(this);
+    m_materialInterface   = new MaterialInterface(this);
+    m_scrollInterface     = new ScrollInterface(this);
+    m_statusInfoInterface = new StatusInfoInterface(this);
+    m_textInterface       = new TextInterface(this);
+    m_viewInterface       = new ViewInterface(this);
 
     initLayout();
     initNavigation();
@@ -106,13 +141,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::initialize()
 {
-    m_titleBar = new GalleryTitleBar(this);
-    m_titleBar->setTitleLabelAlignment(Qt::AlignLeft);
-    //    m_mainWindow = new Ui::MainWindow;
-    //    m_mainWindow->setupUi(this);
-
     QMenuBar *const mb = menuBar();
-
     mb->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
     mb->setStyleSheet(FRAMELESSHELPER_STRING_LITERAL(R"(
 QMenuBar {
@@ -131,23 +160,16 @@ QMenuBar::item:pressed {
     background: #888888;
 }
     )"));
-    const auto titleBarLayout = static_cast<QHBoxLayout *>(m_titleBar->layout());
-    titleBarLayout->insertWidget(0, mb);
 
-    // setMenuWidget(): make the menu widget become the first row of the window.
-    setMenuWidget(m_titleBar);
+    m_titleBar = new GalleryTitleBar(this);
+    m_titleBar->setGeometry(QRect(46, 0, width() - 46, m_titleBar->height()));
+    m_titleBar->hBoxLayout->insertWidget(0, mb);
 
-    FramelessWidgetsHelper *helper = FramelessWidgetsHelper::get(this);
-    helper->setTitleBarWidget(m_titleBar);
-#ifndef Q_OS_MACOS
-    helper->setSystemButton(m_titleBar->minimizeButton(), SystemButtonType::Minimize);
-    helper->setSystemButton(m_titleBar->maximizeButton(), SystemButtonType::Maximize);
-    helper->setSystemButton(m_titleBar->closeButton(), SystemButtonType::Close);
-#endif                              // Q_OS_MACOS
-    helper->setHitTestVisible(mb);  // IMPORTANT!
+    QFramelessHelper *helper = new QFramelessHelper(this);
+    helper->setResizeEnabled(true);
+    helper->setTitleBar(m_titleBar);
 
-    //    connect(m_mainWindow->pushButton, &QPushButton::clicked, this, [this] {});
-    //    connect(m_mainWindow->pushButton_2, &QPushButton::clicked, this, [this] {});
+    setMinimumSize(QSize(800, 600));
 }
 
 void MainWindow::initLayout()
@@ -168,8 +190,66 @@ void MainWindow::initLayout()
 
 void MainWindow::initNavigation()
 {
+    m_homeInterface->setObjectName("homeInterface");
+    m_stackWidget->addWidget(m_homeInterface);
     m_navigationInterface->addItem(m_homeInterface->objectName(), NEWFLICON(FluentIcon, HOME), "Home", this,
                                    SLOT(homeInterfaceClicked()));
+
+    //    m_iconInterface->setObjectName("iconInterface");
+    //    m_stackWidget->addWidget(m_iconInterface);
+    //    m_navigationInterface->addItem(m_iconInterface->objectName(), NEWFLICON(GalleryIcon, EMOJI_TAB_SYMBOLS),
+    //    "Icons",
+    //                                   this, SLOT(iconInterfaceClicked()));
+
+    m_basicInputInterface->setObjectName("basicINputInterface");
+    m_stackWidget->addWidget(m_basicInputInterface);
+    m_navigationInterface->addItem(m_basicInputInterface->objectName(), NEWFLICON(FluentIcon, CHECKBOX), "Basic input",
+                                   this, SLOT(basicInputInterfaceClicked()));
+
+    m_dateTimeInterface->setObjectName("dateTimeInterface");
+    m_stackWidget->addWidget(m_dateTimeInterface);
+    m_navigationInterface->addItem(m_dateTimeInterface->objectName(), NEWFLICON(FluentIcon, DATE_TIME), "Date & time",
+                                   this, SLOT(dateTimeInterfaceClicked()));
+
+    m_dialogInterface->setObjectName("dialogInterface");
+    m_stackWidget->addWidget(m_dialogInterface);
+    m_navigationInterface->addItem(m_dialogInterface->objectName(), NEWFLICON(FluentIcon, MESSAGE), "Dialogs", this,
+                                   SLOT(dialogInterfaceClicked()));
+
+    m_layoutInterface->setObjectName("layoutInterface");
+    m_stackWidget->addWidget(m_layoutInterface);
+    m_navigationInterface->addItem(m_layoutInterface->objectName(), NEWFLICON(FluentIcon, LAYOUT), "Layout", this,
+                                   SLOT(layoutInterfaceClicked()));
+
+    m_materialInterface->setObjectName("materialInterface");
+    m_stackWidget->addWidget(m_materialInterface);
+    m_navigationInterface->addItem(m_materialInterface->objectName(), NEWFLICON(FluentIcon, PALETTE), "Material", this,
+                                   SLOT(materialInterfaceClicked()));
+
+    m_menuInterface->setObjectName("menuInterface");
+    m_stackWidget->addWidget(m_menuInterface);
+    m_navigationInterface->addItem(m_menuInterface->objectName(), NEWFLICON(GalleryIcon, MENU), "Menu", this,
+                                   SLOT(menuInterfaceClicked()));
+
+    m_scrollInterface->setObjectName("scrollInterface");
+    m_stackWidget->addWidget(m_scrollInterface);
+    m_navigationInterface->addItem(m_scrollInterface->objectName(), NEWFLICON(FluentIcon, SCROLL), "Scrolling", this,
+                                   SLOT(scrollInterfaceClicked()));
+
+    m_statusInfoInterface->setObjectName("statusInfoInterface");
+    m_stackWidget->addWidget(m_statusInfoInterface);
+    m_navigationInterface->addItem(m_statusInfoInterface->objectName(), NEWFLICON(FluentIcon, CHAT), "Status & info",
+                                   this, SLOT(statusInfoInterfaceClicked()));
+
+    m_textInterface->setObjectName("textInterface");
+    m_stackWidget->addWidget(m_textInterface);
+    m_navigationInterface->addItem(m_textInterface->objectName(), NEWFLICON(GalleryIcon, TEXT), "Text", this,
+                                   SLOT(textInterfaceClicked()));
+
+    m_viewInterface->setObjectName("viewInterface");
+    m_stackWidget->addWidget(m_viewInterface);
+    m_navigationInterface->addItem(m_viewInterface->objectName(), NEWFLICON(GalleryIcon, GRID), "View", this,
+                                   SLOT(viewInterfaceClicked()));
 
     m_navigationInterface->addSeparator();
 
@@ -177,10 +257,17 @@ void MainWindow::initNavigation()
     m_navigationInterface->addWidget("avatar", avatar, this, SLOT(showMessageBox()), NavigationItemPosition::BOTTOM);
     m_navigationInterface->setDefaultRouteKey(m_homeInterface->objectName());
 
-    connect(m_stackWidget, &StackedWidget::currentWidgetChanged, this,
-            [this](QWidget *w) { m_navigationInterface->setCurrentItem(w->objectName()); });
+    connect(m_stackWidget, &StackedWidget::currentWidgetChanged, this, [this](QWidget *w) {
+        m_navigationInterface->setCurrentItem(w->objectName());
+        qDebug() << "current" << m_stackWidget->view()->currentIndex();
+    });
     m_navigationInterface->setCurrentItem(m_homeInterface->objectName());
     m_stackWidget->setCurrentIndex(0);
+}
+
+void MainWindow::addSubInterface(QWidget *interface, QString objectName, QSharedPointer<FluentIconBase> icon,
+                                 QString text, NavigationItemPosition position)
+{
 }
 
 void MainWindow::initWindow()
@@ -190,14 +277,10 @@ void MainWindow::initWindow()
 
     setWindowTitle(tr("Gallery"));
 
-    QIcon icon = QFileIconProvider().icon(QFileIconProvider::Computer);
-
-    icon = QIcon(":/resource/images/logo.png");
-
+    QIcon icon = QIcon(":/resource/images/logo.png");
     setWindowIcon(icon);
+    m_titleBar->setIcon(icon);
 
-    //    setWindowIcon(icon);
-    m_titleBar->setWindowIcon(icon);
     m_titleBar->setAttribute(Qt::WA_StyledBackground);
 
     QRect desk = QApplication::desktop()->availableGeometry();
@@ -208,23 +291,85 @@ void MainWindow::initWindow()
 
 void MainWindow::switchTo(QWidget *widget, bool triggerByUser)
 {
+    qDebug() << __FUNCTION__ << __LINE__ << widget->objectName();
     m_stackWidget->setCurrentWidget(widget, !triggerByUser);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
     FRAMELESSHELPER_PREPEND_NAMESPACE(FramelessMainWindow)::resizeEvent(event);
+
+    m_navigationInterface->resize(m_navigationInterface->width(), height());
+    m_titleBar->resize(width() - 46, m_titleBar->height());
 }
 
 void MainWindow::showMessageBox()
 {
-    qDebug() << __FUNCTION__ << __LINE__;
-
     MessageBox *m = new MessageBox(tr("This is a help message"),
                                    tr("You clicked a customized navigation widget. You can add more custom widgets by "
                                       "calling `NavigationInterface.addWidget()` "),
                                    this);
     m->exec();
+}
+
+void MainWindow::homeInterfaceClicked()
+{
+    switchTo(m_homeInterface);
+}
+
+void MainWindow::iconInterfaceClicked()
+{
+    switchTo(m_iconInterface);
+}
+
+void MainWindow::basicInputInterfaceClicked()
+{
+    switchTo(m_basicInputInterface);
+}
+
+void MainWindow::dateTimeInterfaceClicked()
+{
+    switchTo(m_dateTimeInterface);
+}
+
+void MainWindow::dialogInterfaceClicked()
+{
+    switchTo(m_dialogInterface);
+}
+
+void MainWindow::layoutInterfaceClicked()
+{
+    switchTo(m_layoutInterface);
+}
+
+void MainWindow::materialInterfaceClicked()
+{
+    switchTo(m_materialInterface);
+}
+
+void MainWindow::menuInterfaceClicked()
+{
+    switchTo(m_menuInterface);
+}
+
+void MainWindow::scrollInterfaceClicked()
+{
+    switchTo(m_scrollInterface);
+}
+
+void MainWindow::statusInfoInterfaceClicked()
+{
+    switchTo(m_statusInfoInterface);
+}
+
+void MainWindow::textInterfaceClicked()
+{
+    switchTo(m_textInterface);
+}
+
+void MainWindow::viewInterfaceClicked()
+{
+    switchTo(m_viewInterface);
 }
 
 void MainWindow::switchToSample(QString routeKey, int index)
@@ -236,12 +381,6 @@ void MainWindow::switchToSample(QString routeKey, int index)
             w->scrollToCard(index);
         }
     }
-}
-
-void MainWindow::homeInterfaceClicked(bool user)
-{
-    qDebug() << __FUNCTION__ << __LINE__ << user;
-    switchTo(m_homeInterface, user);
 }
 
 void MainWindow::waitReady()

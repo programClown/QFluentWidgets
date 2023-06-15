@@ -8,6 +8,7 @@
 MaterialInterface::MaterialInterface(QWidget *parent)
     : GalleryInterface(Translator::ins()->material, "qfluentwidgets.components.widgets", parent)
 {
+    return;
     GalleryConfig *cfg = GalleryConfig::cfg();
     m_label->setImage(":/resource/images/chidanta.jpg");
     m_label->setMaximumSize(787, 579);

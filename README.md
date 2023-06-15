@@ -5,3 +5,9 @@
 当前分支`444f2fe980ac472449be20fe24a185d251942dc3`
 
 未完待续...
+
+# 截图
+
+1. gallery
+
+![](screenshot/gallay-shot.png)

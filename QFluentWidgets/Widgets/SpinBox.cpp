@@ -49,6 +49,12 @@ QString SpinIcon::typeName() const
     return iconName(m_type);
 }
 
+QString SpinIcon::enumName() const
+{
+    QMetaEnum metaEnum = QMetaEnum::fromType<IconType>();
+    return metaEnum.valueToKey(m_type);
+}
+
 FluentIconBase *SpinIcon::clone()
 {
     return new SpinIcon(m_type, m_theme);

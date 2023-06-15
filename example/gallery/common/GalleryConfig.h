@@ -29,7 +29,15 @@ public:
         }
     }
 
+public:
     static GalleryConfig *cfg();
+
+public:
+    // folders
+    Qfw::ConfigItem *musicFolders;
+    Qfw::ConfigItem *downloadFolder;
+
+    // mainwindow
 
 private:
 };

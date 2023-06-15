@@ -8,11 +8,11 @@
 
 #if defined(Q_OS_WIN32)
     #include "windows/WindowsFramelessHelper.h"
-    using FramelessHelper = WindowsFramelessHelper;
+using QFramelessHelper = WindowsFramelessHelper;
 
 #else
     #include "widgetResizeHandler/WidgetResizeHandler.h"
-    using FramelessHelper = WidgetResizeHandler;
+using QFramelessHelper = WidgetResizeHandler;
 #endif
 
 #endif  // QFRAMELESSWINDOW_H

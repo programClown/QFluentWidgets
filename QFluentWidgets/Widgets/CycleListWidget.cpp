@@ -53,6 +53,12 @@ QString ScrollIcon::typeName() const
     return iconName(m_type);
 }
 
+QString ScrollIcon::enumName() const
+{
+    QMetaEnum metaEnum = QMetaEnum::fromType<IconType>();
+    return metaEnum.valueToKey(m_type);
+}
+
 FluentIconBase *ScrollIcon::clone()
 {
     return new ScrollIcon(m_type, m_theme);

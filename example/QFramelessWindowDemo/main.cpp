@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     //    DWindow wd;  // 应用图标和标题
     //    AWindow wa;  // 毛玻璃和阴影效果
 
-    WindowsFramelessHelper *helper = new FramelessHelper(&w);
+    QFramelessHelper *helper = new QFramelessHelper(&w);
     helper->setResizeEnabled(false);
 
     w.show();

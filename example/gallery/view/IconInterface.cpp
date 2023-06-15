@@ -71,12 +71,12 @@ void IconCard::setSelected(bool isSelected, bool force)
 
 IconInfoPanel::IconInfoPanel(FluentIconBase *icon, QWidget *parent) : QFrame(parent)
 {
-    //    m_nameLabel          = new QLabel(icon->typeName(), this);
+    m_nameLabel          = new QLabel(icon->typeName(), this);
     m_iconWidget         = new IconWidget(icon, this);
     m_iconNameTitleLabel = new QLabel(tr("Icon name"));
-    //    m_iconNameLabel      = new QLabel(icon->typeName(), this);
+    m_iconNameLabel      = new QLabel(icon->typeName(), this);
     m_enumNameTitleLabel = new QLabel(tr("Enum member"));
-    //    m_enumNameLabel      = new QLabel("FluentIcon::" + icon->enumName());
+    m_enumNameLabel      = new QLabel("FluentIcon::" + icon->enumName());
 
     m_vBoxLayout = new QVBoxLayout(this);
     m_vBoxLayout->setContentsMargins(16, 20, 16, 20);
@@ -152,17 +152,20 @@ void IconCardView::initWidget()
     m_flowLayout->setContentsMargins(8, 3, 8, 8);
 
     setQss();
-
     connect(GalleryConfig::cfg(), &GalleryConfig::themeChanged, this, &IconCardView::setQss);
     connect(m_searchLineEdit, &GalleryLineEdit::clearSignal, this, &IconCardView::showAllIcons);
     connect(m_searchLineEdit, &GalleryLineEdit::searchSignal, this, &IconCardView::search);
 
-    //    for (int i = FluentIcon::IconType::EMPTY_ICON; i <= FluentIcon::IconType::BACKGROUND_FILL; i++) {
-    //        FluentIcon::IconType type = (FluentIcon::IconType)i;
-    //        addIcon(NEWFLICON(type));
-    //    }
+    QMetaEnum metaEnum = QMetaEnum::fromType<FluentIcon::IconType>();
 
-    setSelectedIcon(m_icons[0]);
+    for (int i = 0; i <= metaEnum.keyCount(); i++) {
+        FluentIcon::IconType type = (FluentIcon::IconType)metaEnum.value(i);
+        FluentIcon *icon          = new FluentIcon(type);
+        addIcon(icon);
+    }
+    if (m_icons.count() > 0) {
+        setSelectedIcon(m_icons[0]);
+    }
 }
 
 void IconCardView::addIcon(FluentIconBase *icon)
@@ -170,7 +173,7 @@ void IconCardView::addIcon(FluentIconBase *icon)
     IconCard *card = new IconCard(icon, this);
     connect(card, &IconCard::clicked, this, &IconCardView::setSelectedIcon);
 
-    //    m_trie->insert(icon->typeName(), m_cards.length());
+    m_trie->insert(icon->typeName(), m_cards.length());
     m_cards.append(card);
     m_icons.append(icon);
     m_flowLayout->addWidget(card);

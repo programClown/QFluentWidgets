@@ -74,10 +74,12 @@ public:
 
     void resizeEvent(QResizeEvent *) override;
 
+protected:
+    QVBoxLayout *m_vBoxLayout;
+
 private:
     QWidget *m_view;
     ToolBar *m_toolBar;
-    QVBoxLayout *m_vBoxLayout;
 };
 
 #endif  // GALLERYINTERFACE_H

@@ -103,7 +103,6 @@ public:
 
 private:
     IconCardView *m_iconView;
-    QVBoxLayout *m_vBoxLayout;
 };
 
 #endif  // ICONINTERFACE_H

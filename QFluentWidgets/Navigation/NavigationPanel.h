@@ -72,6 +72,8 @@ private:
     QString m_defaultRouteKey;
     QStringList m_history;
     QHash<QString, NavigationWidget *> m_items;
+
+    friend class NavigationPanel;
 };
 
 class NavigationPanel : public QFrame
@@ -156,7 +158,7 @@ private:
     bool m_isMenuButtonVisible;
     bool m_isReturnButtonVisible;
 
-    QHash<QString, NavigationWidget *> m_items;
+    //    QHash<QString, NavigationWidget *> m_items;
     QPropertyAnimation *m_expandAni;
     int m_expandWidth;
 };

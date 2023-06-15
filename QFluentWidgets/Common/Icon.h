@@ -40,14 +40,16 @@ public:
     QIconEngine *clone() const override;
 };
 
-class FluentIconBase
+class FluentIconBase : public QObject
 {
+    Q_OBJECT
 public:
     explicit FluentIconBase(const QString &path);
     virtual ~FluentIconBase();
 
     virtual QIcon icon()             = 0;
     virtual QString typeName() const = 0;
+    virtual QString enumName() const = 0;
     virtual FluentIconBase *clone()  = 0;
 
     virtual void setTheme(const Qfw::Theme &theme) = 0;
@@ -60,6 +62,7 @@ public:
 
 class FluentIcon : public FluentIconBase
 {
+    Q_OBJECT
 public:
     enum IconType
     {
@@ -146,6 +149,8 @@ public:
         BACKGROUND_FILL
     };
 
+    Q_ENUM(IconType)
+
     static QString iconName(IconType type);
 
     FluentIcon(const QString &customPath);
@@ -157,6 +162,7 @@ public:
     // FluentIconBase interface
     QIcon icon() override;
     QString typeName() const override;
+    QString enumName() const override;
     FluentIconBase *clone() override;
 
     Qfw::Theme theme() const;

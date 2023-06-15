@@ -71,6 +71,12 @@ QString InfoBarIcon::typeName() const
     return iconName(m_type);
 }
 
+QString InfoBarIcon::enumName() const
+{
+    QMetaEnum metaEnum = QMetaEnum::fromType<IconType>();
+    return metaEnum.valueToKey(m_type);
+}
+
 FluentIconBase *InfoBarIcon::clone()
 {
     return new InfoBarIcon(m_type, m_theme);

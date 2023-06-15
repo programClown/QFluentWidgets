@@ -151,7 +151,7 @@ private:
                                      SLOT(settingInterfaceClick()), true, NavigationItemPosition::BOTTOM);
 
         // IMPORTANT: don't forget to set the default route key if you enable the return button
-        // navigationInterface->setDefaultRouteKey(musicInterface->objectName());
+        navigationInterface->setDefaultRouteKey(musicInterface->objectName());
 
         // set the maximum width
         // navigationInterface->setExpandWidth(300);

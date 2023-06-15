@@ -24,7 +24,7 @@ NavigationPanel::NavigationPanel(bool minimalEnabled, QWidget *parent) : QFrame(
     bottomLayout = new NavigationItemLayout();
     scrollLayout = new NavigationItemLayout(scrollWidget);
 
-    history = new NavigationHistory(m_items, this);
+    history = new NavigationHistory({}, this);
 
     m_expandAni   = new QPropertyAnimation(this, "geometry", this);
     m_expandWidth = 322;
@@ -104,7 +104,7 @@ void NavigationPanel::addItem(const QString &routeKey, FluentIconBase *icon, con
                               const QObject *receiver, const char *onClick, bool selectable,
                               NavigationItemPosition position)
 {
-    if (m_items.keys().contains(routeKey)) {
+    if (history->m_items.keys().contains(routeKey)) {
         return;
     }
 
@@ -115,14 +115,14 @@ void NavigationPanel::addItem(const QString &routeKey, FluentIconBase *icon, con
 void NavigationPanel::addWidget(const QString &routeKey, NavigationWidget *widget, const QObject *receiver,
                                 const char *onClick, NavigationItemPosition position)
 {
-    if (m_items.keys().contains(routeKey)) {
+    if (history->m_items.keys().contains(routeKey)) {
         return;
     }
 
     connect(widget, &NavigationWidget::clicked, this, &NavigationPanel::onWidgetClicked);
     connect(widget, SIGNAL(clicked(bool)), receiver, onClick);
     widget->setProperty("routeKey", routeKey);
-    m_items.insert(routeKey, widget);
+    history->m_items.insert(routeKey, widget);
 
     if (displayMode == NavigationDisplayMode::EXPAND || displayMode == NavigationDisplayMode::MENU) {
         widget->setCompacted(false);
@@ -133,11 +133,11 @@ void NavigationPanel::addWidget(const QString &routeKey, NavigationWidget *widge
 
 void NavigationPanel::removeWidget(const QString &routeKey)
 {
-    if (!m_items.keys().contains(routeKey)) {
+    if (!history->m_items.keys().contains(routeKey)) {
         return;
     }
 
-    NavigationWidget *w = m_items.take(routeKey);
+    NavigationWidget *w = history->m_items.take(routeKey);
     w->deleteLater();
     history->remove(routeKey, true);
 }
@@ -225,7 +225,7 @@ void NavigationPanel::onExpandAniFinished()
         this->setProperty("menu", false);
         this->setStyle(QApplication::style());
 
-        for (auto item : m_items.values()) {
+        for (auto item : history->m_items.values()) {
             item->setCompacted(true);
         }
 
@@ -245,12 +245,12 @@ void NavigationPanel::addSeparator(NavigationItemPosition position)
 
 void NavigationPanel::setCurrentItem(const QString &routeKey)
 {
-    if (!m_items.keys().contains(routeKey)) {
+    if (!history->m_items.keys().contains(routeKey)) {
         return;
     }
 
     history->push(routeKey);
-    QHashIterator<QString, NavigationWidget *> i(m_items);
+    QHashIterator<QString, NavigationWidget *> i(history->m_items);
     while (i.hasNext()) {
         i.next();
         i.value()->setSelected(i.key() == routeKey);

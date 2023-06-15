@@ -13,6 +13,17 @@ class GalleryTitleBar;
 class FluentIcon;
 
 class HomeInterface;
+class IconInterface;
+class BasicInputInterface;
+class DateTimeInterface;
+class DialogInterface;
+class LayoutInterface;
+class MenuInterface;
+class MaterialInterface;
+class ScrollInterface;
+class StatusInfoInterface;
+class TextInterface;
+class ViewInterface;
 
 FRAMELESSHELPER_BEGIN_NAMESPACE
 class StandardTitleBar;
@@ -30,6 +41,8 @@ public:
 
     void setCurrentIndex(int index, bool popOut = false);
 
+    PopUpAniStackedWidget *view() const;
+
 signals:
     void currentWidgetChanged(QWidget *);
 
@@ -38,10 +51,10 @@ private:
     PopUpAniStackedWidget *m_view;
 };
 
-namespace Ui
-{
-    class MainWindow;
-}
+// namespace Ui
+//{
+//    class MainWindow;
+//}
 
 class MainWindow : public FRAMELESSHELPER_PREPEND_NAMESPACE(FramelessMainWindow)
 {
@@ -64,6 +77,9 @@ private:
 
     void initNavigation();
 
+    void addSubInterface(QWidget *interface, QString objectName, QSharedPointer<FluentIconBase> icon, QString text,
+                         NavigationItemPosition position = NavigationItemPosition::SCROLL);
+
     void initWindow();
 
     void switchTo(QWidget *widget, bool triggerByUser = true);
@@ -74,11 +90,22 @@ private:
 
 public slots:
     void showMessageBox();
-    void homeInterfaceClicked(bool user);
+    void homeInterfaceClicked();
+    void iconInterfaceClicked();
+    void basicInputInterfaceClicked();
+    void dateTimeInterfaceClicked();
+    void dialogInterfaceClicked();
+    void layoutInterfaceClicked();
+    void materialInterfaceClicked();
+    void menuInterfaceClicked();
+    void scrollInterfaceClicked();
+    void statusInfoInterfaceClicked();
+    void textInterfaceClicked();
+    void viewInterfaceClicked();
 
 private:
-    GalleryTitleBar *m_titleBar  = nullptr;
-    Ui::MainWindow *m_mainWindow = nullptr;
+    GalleryTitleBar *m_titleBar = nullptr;
+    //    Ui::MainWindow *m_mainWindow = nullptr;
 
     QHBoxLayout *m_hBoxLayout;
     QHBoxLayout *m_widgetLayout;
@@ -86,6 +113,17 @@ private:
     NavigationInterface *m_navigationInterface;
 
     HomeInterface *m_homeInterface;
+    IconInterface *m_iconInterface;
+    BasicInputInterface *m_basicInputInterface;
+    DateTimeInterface *m_dateTimeInterface;
+    DialogInterface *m_dialogInterface;
+    LayoutInterface *m_layoutInterface;
+    MenuInterface *m_menuInterface;
+    MaterialInterface *m_materialInterface;
+    ScrollInterface *m_scrollInterface;
+    StatusInfoInterface *m_statusInfoInterface;
+    TextInterface *m_textInterface;
+    ViewInterface *m_viewInterface;
 };
 
 #endif  // MAINWINDOW_H

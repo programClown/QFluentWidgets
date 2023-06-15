@@ -3,7 +3,9 @@
 
 #include <FramelessHelper/Widgets/standardtitlebar.h>
 
-typedef FRAMELESSHELPER_PREPEND_NAMESPACE(StandardTitleBar) StandardTitleBar;
+// typedef FRAMELESSHELPER_PREPEND_NAMESPACE(StandardTitleBar) StandardTitleBar;
+
+#include <TitleBar.h>
 
 class GalleryTitleBar : public StandardTitleBar
 {

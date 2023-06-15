@@ -37,13 +37,12 @@ void MenuInterface::createMenu(QPoint pos)
 
     // add separator
     menu->addSeparator();
-    menu->addAction(new QAction(tr("Select all")));
 
-    // insert actions
-    menu->insertAction(menu->menuActions()[-1], new QAction(FluentIcon(FluentIcon::SETTING).icon(), tr("Settings")));
-    menu->insertActions(menu->menuActions()[-1],
-                        { new QAction(FluentIcon(FluentIcon::HELP).icon(), tr("Help")),
-                          new QAction(FluentIcon(FluentIcon::FEEDBACK).icon(), tr("Feedbackc")) });
+    // add actions
+    menu->addAction(new QAction(FluentIcon(FluentIcon::SETTING).icon(), tr("Settings")));
+    menu->addActions({ new QAction(FluentIcon(FluentIcon::HELP).icon(), tr("Help")),
+                       new QAction(FluentIcon(FluentIcon::FEEDBACK).icon(), tr("Feedbackc")) });
+    menu->addAction(new QAction(tr("Select all")));
 
     // show menu
     menu->exec(pos, true);

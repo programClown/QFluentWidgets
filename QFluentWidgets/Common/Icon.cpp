@@ -350,6 +350,12 @@ QString FluentIcon::typeName() const
     return iconName(m_type);
 }
 
+QString FluentIcon::enumName() const
+{
+    QMetaEnum metaEnum = QMetaEnum::fromType<IconType>();
+    return metaEnum.valueToKey(m_type);
+}
+
 FluentIconBase *FluentIcon::clone()
 {
     if (m_type == UNKNOWN) {
