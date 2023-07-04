@@ -11,3 +11,7 @@
 1. gallery
 
 ![](screenshot/gallay-shot.png)
+
+# 后续
+
+**目前没有精力维护了！！！**
