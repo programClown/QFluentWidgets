@@ -38,9 +38,9 @@ QString GalleryStyleSheet::content(const QString &name)
 {
     QString fullName;
     if (QFWIns.isDarkTheme()) {
-        fullName = QString("../resource/qss/dark/%2.qss").arg(name.toLower());
+        fullName = QString(":/resource/qss/dark/%2.qss").arg(name.toLower());
     } else {
-        fullName = QString("../resource/qss/light/%2.qss").arg(name.toLower());
+        fullName = QString(":/resource/qss/light/%2.qss").arg(name.toLower());
     }
     QFile f(fullName);
     QString qss = "";

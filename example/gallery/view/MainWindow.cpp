@@ -162,7 +162,7 @@ QMenuBar::item:pressed {
     )"));
 
     m_titleBar = new GalleryTitleBar(this);
-    m_titleBar->setGeometry(QRect(46, 0, width() - 46, m_titleBar->height()));
+    m_titleBar->setGeometry(QRect(46, 1, width() - 46, m_titleBar->height()));
     m_titleBar->hBoxLayout->insertWidget(0, mb);
 
     QFramelessHelper *helper = new QFramelessHelper(this);
@@ -181,7 +181,7 @@ void MainWindow::initLayout()
     m_hBoxLayout->setStretchFactor(m_widgetLayout, 1);
 
     m_widgetLayout->addWidget(m_stackWidget);
-    m_widgetLayout->setContentsMargins(0, 48, 0, 0);
+    m_widgetLayout->setContentsMargins(0, 32, 0, 0);
 
     connect(SignalBus::signalBus(), &SignalBus::switchToSampleCard, this, &MainWindow::switchToSample);
     connect(m_navigationInterface, &NavigationInterface::displayModeChanged, m_titleBar, &GalleryTitleBar::raise);

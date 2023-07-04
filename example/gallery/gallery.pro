@@ -15,6 +15,7 @@ INCLUDEPATH += $$PWD/../../QFramelessWindow
 INCLUDEPATH += $$PWD/../../QFramelessWindow/windows
 INCLUDEPATH += $$PWD/../../QFramelessWindow/titlebar
 
+
 CONFIG(debug, release|debug){
     win32:LIBS += -lqframelesswindowd -luser32 -lDwmapi
     else: LIBS += -lqframelesswindow -luser32 -lDwmapi
