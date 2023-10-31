@@ -68,7 +68,7 @@ bool LineEdit::isClearButtonEnabled() const
     return m_isClearButtonEnabled;
 }
 
-void LineEdit::setIsClearButtonEnabled(bool enable)
+void LineEdit::setClearButtonEnabled(bool enable)
 {
     m_isClearButtonEnabled = enable;
     setTextMargins(0, 0, 28 * int(enable), 0);
@@ -158,6 +158,24 @@ void SearchLineEdit::search()
     } else {
         emit clearSignal();
     }
+}
+
+PasswordLineEdit::PasswordLineEdit(QWidget *parent) : LineEdit(parent)
+{
+    m_echoButton         = new LineEditButton(NEWFLICON(FluentIcon, VIEW), this);
+    QHBoxLayout *hLayout = hBoxLayout();
+    hLayout->addWidget(m_echoButton, 0, Qt::AlignRight);
+    setClearButtonEnabled(true);
+    setTextMargins(0, 0, 59, 0);
+
+    connect(m_echoButton, &LineEditButton::clicked, this, &PasswordLineEdit::switchEchoMode);
+    connect(clearButton(), &LineEditButton::clicked, this, &PasswordLineEdit::clearSignal);
+}
+
+void PasswordLineEdit::switchEchoMode()
+{
+    setEchoMode(echoMode() == QLineEdit::Normal ? QLineEdit::Password : QLineEdit::Normal);
+    emit echoModeChanged();
 }
 
 TextEdit::TextEdit(QWidget *parent) : QTextEdit(parent)

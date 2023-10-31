@@ -14,6 +14,7 @@
 #include "StatusInfoInterface.h"
 #include "TextInterface.h"
 #include "ViewInterface.h"
+#include "SettingInterface.h"
 
 #include "GalleryInterface.h"
 #include "common/SignalBus.h"
@@ -121,6 +122,7 @@ MainWindow::MainWindow(QWidget *parent, const Qt::WindowFlags flags) : Frameless
     m_statusInfoInterface = new StatusInfoInterface(this);
     m_textInterface       = new TextInterface(this);
     m_viewInterface       = new ViewInterface(this);
+    m_settingInterface    = new SettingInterface(this);
 
     initLayout();
     initNavigation();
@@ -246,15 +248,21 @@ void MainWindow::initNavigation()
     m_navigationInterface->addItem(m_textInterface->objectName(), NEWFLICON(GalleryIcon, TEXT), "Text", this,
                                    SLOT(textInterfaceClicked()));
 
-    m_viewInterface->setObjectName("viewInterface");
-    m_stackWidget->addWidget(m_viewInterface);
-    m_navigationInterface->addItem(m_viewInterface->objectName(), NEWFLICON(GalleryIcon, GRID), "View", this,
-                                   SLOT(viewInterfaceClicked()));
-
     m_navigationInterface->addSeparator();
 
     AvatarWidget *avatar = new AvatarWidget(":/resource/images/shoko.png");
     m_navigationInterface->addWidget("avatar", avatar, this, SLOT(showMessageBox()), NavigationItemPosition::BOTTOM);
+
+    m_viewInterface->setObjectName("viewInterface");
+    m_stackWidget->addWidget(m_viewInterface);
+    m_navigationInterface->addItem(m_viewInterface->objectName(), NEWFLICON(GalleryIcon, GRID), "View", this,
+                                   SLOT(viewInterfaceClicked()), NavigationItemPosition::BOTTOM);
+
+    m_settingInterface->setObjectName("settingInterface");
+    m_stackWidget->addWidget(m_settingInterface);
+    m_navigationInterface->addItem(m_settingInterface->objectName(), NEWFLICON(FluentIcon, SETTING), "Setting", this,
+                                   SLOT(settingInterfaceClicked()), false, NavigationItemPosition::BOTTOM);
+
     m_navigationInterface->setDefaultRouteKey(m_homeInterface->objectName());
 
     connect(m_stackWidget, &StackedWidget::currentWidgetChanged, this, [this](QWidget *w) {
@@ -370,6 +378,11 @@ void MainWindow::textInterfaceClicked()
 void MainWindow::viewInterfaceClicked()
 {
     switchTo(m_viewInterface);
+}
+
+void MainWindow::settingInterfaceClicked()
+{
+    switchTo(m_settingInterface);
 }
 
 void MainWindow::switchToSample(QString routeKey, int index)

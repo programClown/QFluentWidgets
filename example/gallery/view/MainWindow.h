@@ -24,6 +24,7 @@ class ScrollInterface;
 class StatusInfoInterface;
 class TextInterface;
 class ViewInterface;
+class SettingInterface;
 
 FRAMELESSHELPER_BEGIN_NAMESPACE
 class StandardTitleBar;
@@ -102,6 +103,7 @@ public slots:
     void statusInfoInterfaceClicked();
     void textInterfaceClicked();
     void viewInterfaceClicked();
+    void settingInterfaceClicked();
 
 private:
     GalleryTitleBar *m_titleBar = nullptr;
@@ -124,6 +126,7 @@ private:
     StatusInfoInterface *m_statusInfoInterface;
     TextInterface *m_textInterface;
     ViewInterface *m_viewInterface;
+    SettingInterface *m_settingInterface;
 };
 
 #endif  // MAINWINDOW_H

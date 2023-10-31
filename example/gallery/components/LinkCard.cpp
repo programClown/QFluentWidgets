@@ -9,6 +9,10 @@
 #include <QDesktopServices>
 #include <QLabel>
 #include <QBoxLayout>
+#include <QBrush>
+#include <QPalette>
+
+#include <QDebug>
 
 LinkCard::LinkCard(FluentIconBase *icon, QString title, QString content, QString const url, QWidget *parent)
     : QFrame(parent)
@@ -18,7 +22,10 @@ LinkCard::LinkCard(FluentIconBase *icon, QString title, QString content, QString
     m_iconWidget   = new IconWidget(icon, this);
     m_titleLabel   = new QLabel(title, this);
     m_contentLabel = new QLabel(content, this);
-    m_urlWidget    = new IconWidget(NEWFLICON(FluentIcon, LINK), this);
+    m_contentLabel->setWordWrap(true);
+    m_urlWidget = new IconWidget(NEWFLICON(FluentIcon, LINK), this);
+
+    //    setAutoFillBackground(true);
 
     initWidget();
 }
@@ -67,7 +74,14 @@ LinkCardView::LinkCardView(QWidget *parent) : ScrollArea(parent, Qt::Horizontal)
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     m_view->setObjectName("view");
-    GalleryStyleSheet::apply(GalleryStyleSheet::LINK_CARD, this);
+    //    GalleryStyleSheet::apply(GalleryStyleSheet::LINK_CARD, this);
+
+    //    setStyleSheet("#view { background-color: yellow }");
+    //    setStyleSheet("#titleLabel { font: 18px }");
+
+    setStyleSheet("#view { background-color: yellow }");
+
+    qDebug() << __FUNCTION__ << __LINE__ << palette().background().color();
 }
 
 void LinkCardView::addCard(FluentIconBase *icon, QString title, QString content, QString const url)

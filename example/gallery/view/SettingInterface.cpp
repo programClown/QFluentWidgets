@@ -14,19 +14,20 @@
 
 SettingInterface::SettingInterface(QWidget *parent) : ScrollArea(parent)
 {
-    m_scrollWidget = new QWidget();
-    m_expandLayout = new ExpandLayout(m_scrollWidget);
+    //    m_scrollWidget = new QWidget();
+    //    m_expandLayout = new ExpandLayout(m_scrollWidget);
 
-    // setting label
-    m_settingLabel = new QLabel(tr("Settings"), this);
+    //    // setting label
+    //    m_settingLabel = new QLabel(tr("Settings"), this);
 
-    // music folders
-    m_musicInThisPCGroup = new SettingCardGroup(tr("Music on this PC"), m_scrollWidget);
-    m_musicFolderCard    = new FolderListSettingCard(
-            GalleryConfig::cfg()->musicFolders->value(), tr("Local music library"), "",
-            QStandardPaths::writableLocation(QStandardPaths::MusicLocation), m_musicInThisPCGroup);
-    m_downloadFolderCard =
-            new PushSettingCard(tr("Choose folder"), NEWFLICON(FluentIcon, DOWNLOAD), tr("Download directory"), "");
+    //    // music folders
+    //    m_musicInThisPCGroup = new SettingCardGroup(tr("Music on this PC"), m_scrollWidget);
+    //    m_musicFolderCard    = new FolderListSettingCard(
+    //            GalleryConfig::cfg()->musicFolders->value(), tr("Local music library"), "",
+    //            QStandardPaths::writableLocation(QStandardPaths::MusicLocation), m_musicInThisPCGroup);
+    //    m_downloadFolderCard =
+    //            new PushSettingCard(tr("Choose folder"), NEWFLICON(FluentIcon, DOWNLOAD), tr("Download directory"),
+    //            "");
 }
 
 void SettingInterface::initWidget() { }

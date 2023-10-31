@@ -9,9 +9,8 @@ TextInterface::TextInterface(QWidget *parent)
     : GalleryInterface(Translator::ins()->text, "qfluentwidgets.components.widgets", parent)
 {
     // line edit
-    LineEdit *lineEdit = new LineEdit(this);
+    LineEdit *lineEdit = new PasswordLineEdit(this);
     lineEdit->setText("ko no dio da！");
-    lineEdit->setClearButtonEnabled(true);
     addExampleCard("A LineEdit with a clear button", lineEdit,
                    "https://github.com/zhiyiYo/PyQt-Fluent-Widgets/blob/master/examples/line_edit/demo.py");
 

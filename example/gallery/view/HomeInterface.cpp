@@ -28,9 +28,12 @@ BannerWidget::BannerWidget(QWidget *parent) : QWidget(parent)
     m_vBoxLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 
     m_linkCardView->addCard(new FluentIcon(":/resource/images/logo.png"), tr("Getting started"),
-                            tr("An overview of app development options and samples."), HELP_URL);
-    m_linkCardView->addCard(NEWFLICON(FluentIcon, GITHUB), tr("GitHub repo"),
-                            tr("The latest fluent design controls and styles for your applications."), REPO_URL);
+                            tr("An overview of app development."), HELP_URL);
+    m_linkCardView->addCard(
+            NEWFLICON(FluentIcon, GITHUB), tr("GitHub repo"),
+            tr("The latest fluent design controls and styles for your applications applications applications  options "
+               "and samples  options and samples  options and samples  options and samples  options and samples."),
+            REPO_URL);
     m_linkCardView->addCard(NEWFLICON(FluentIcon, CODE), tr("Code samples"),
                             tr("Find samples that demonstrate specific tasks, features and APIs."), EXAMPLE_URL);
     m_linkCardView->addCard(NEWFLICON(FluentIcon, FEEDBACK), tr("Send feedback"),

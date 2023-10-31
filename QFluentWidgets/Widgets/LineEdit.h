@@ -31,7 +31,7 @@ public:
     explicit LineEdit(QWidget *parent = nullptr);
 
     bool isClearButtonEnabled() const;
-    void setIsClearButtonEnabled(bool enable);
+    void setClearButtonEnabled(bool enable);
 
     QHBoxLayout *hBoxLayout() const;
     LineEditButton *clearButton() const;
@@ -69,6 +69,23 @@ protected slots:
 
 private:
     LineEditButton *m_searchButton;
+};
+
+class PasswordLineEdit : public LineEdit
+{
+    Q_OBJECT
+public:
+    PasswordLineEdit(QWidget *parent = nullptr);
+
+signals:
+    void echoModeChanged();
+    void clearSignal();
+
+protected:
+    void switchEchoMode();
+
+private:
+    LineEditButton *m_echoButton;
 };
 
 class TextEdit : public QTextEdit
